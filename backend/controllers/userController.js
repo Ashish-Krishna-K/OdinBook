@@ -1,4 +1,5 @@
 const passport = require('passport');
+const jwt = require('jsonwebtoken');
 const FacebookStrategy = require('passport-facebook');
 const User = require('../models/userModel');
 
@@ -30,12 +31,14 @@ passport.use(new FacebookStrategy(
 ))
 
 exports.login_with_fb = [
-  passport.authenticate('facebook', { scope: ['email'] })
+  passport.authenticate('facebook', { scope: ['email'] }),
 ]
 
 exports.fb_login_redirect = (req, res, next) => {
-  passport.authenticate('facebook', (err, user, msg) => {
+  passport.authenticate('facebook', { session: false }, (err, user, msg) => {
     if (err) { return res.status(400).json(err) }
-    return res.json(user);
+    const tokenizePayload = JSON.stringify(user._id);
+    const token = jwt.sign(tokenizePayload, process.env.JWT_SECRET);
+    return res.redirect(`http://localhost:3000/login/${token}`)
   })(req, res, next)
 }
