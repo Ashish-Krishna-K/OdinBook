@@ -14,6 +14,6 @@ export default function LoginPage() {
   })
 
   return (
-    <a href="http://localhost:8080/api/users/login/facebook">Login With Facebook</a>
+    <a href={`${process.env.REACT_APP_API_DOMAIN}/api/users/login/facebook`}>Login With Facebook</a>
   )
 }

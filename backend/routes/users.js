@@ -11,4 +11,6 @@ router.get('/login/facebook', UserController.login_with_fb);
 
 router.get('/login/facebook/redirect', UserController.fb_login_redirect);
 
+router.post('/search', UserController.search_user);
+
 module.exports = router;

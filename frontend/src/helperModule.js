@@ -1,13 +1,20 @@
 import axios from "axios"
 
-export const AxiosInstance = axios.create({
-  baseURL: `http://localhost:8080/api`
-})
-
-export const checkUserInLocalStorage = () => {
-  return window.localStorage.getItem('AUTH_TOKEN') ? true : false
+export const getAuthTokenFromLocalStorage = () => {
+  return JSON.parse(localStorage.getItem('AUTH_TOKEN')) || false
 }
 
 export const saveTokenToLocalStorage = (token) => {
-  window.localStorage.setItem('AUTH_TOKEN', JSON.stringify(token));
+  localStorage.setItem('AUTH_TOKEN', JSON.stringify(token));
 }
+
+export const clearLocalStorage = () => {
+  localStorage.clear();
+}
+
+export const axiosAuthInstance = axios.create({
+  baseURL: `${process.env.REACT_APP_API_DOMAIN}/api`,
+  headers: {
+    Authorization: `Bearer ${getAuthTokenFromLocalStorage()}`,
+  }
+})

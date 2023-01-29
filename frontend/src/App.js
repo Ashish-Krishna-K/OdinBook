@@ -1,25 +1,20 @@
-import { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLoaderData, Navigate } from "react-router-dom";
 import Header from "./components/Header";
-import { checkUserInLocalStorage } from "./helperModule";
 
 export default function App() {
-  const navigate = useNavigate();
-
-  useEffect(() => {
-    if (!checkUserInLocalStorage()) {
-      navigate('/login')
-    }
-  })
+  const authToken = useLoaderData();
 
   return (
     <>
-      <header>
-        <Header />
-      </header>
-      <main>
-        <h2>Yet to implement</h2>
-      </main>
+      {
+        !authToken ? <Navigate to="/login" /> :
+          <>
+            <Header />
+            <main>
+              <h2>Yet to implement</h2>
+            </main>
+          </>
+      }
     </>
   );
 }

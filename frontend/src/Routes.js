@@ -1,15 +1,27 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { createBrowserRouter } from "react-router-dom";
 import App from './App'
+import { getAuthTokenFromLocalStorage } from "./helperModule";
 import ErrorPage from "./pages/ErrorPage";
 import LoginPage from "./pages/LoginPage";
+import SearchUsers from "./pages/SearchUsersPage";
 
-export default function RouteSwitch() {
-  return (
-    <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<App />} errorElement={<ErrorPage />} />
-        <Route path="/login/:token?" element={<LoginPage />} errorElement={<ErrorPage />} />
-      </Routes>
-    </BrowserRouter>
-  )
-}
+const router = createBrowserRouter([
+  {
+    path: "/",
+    element: <App />,
+    errorElement: <ErrorPage />,
+    loader: () => getAuthTokenFromLocalStorage()
+  },
+  {
+    path: "/login/:token?",
+    element: <LoginPage />,
+    errorElement: <ErrorPage />,
+  },
+  {
+    path: "/user/search",
+    element: <SearchUsers />,
+    errorElement: <ErrorPage />,
+  }
+])
+
+export default router

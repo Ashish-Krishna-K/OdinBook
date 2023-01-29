@@ -11,7 +11,7 @@ passport.use(new FacebookStrategy(
     profileFields: ['id', 'displayName', 'email', 'picture.type(large)'],
   },
   (accessToken, refreshToken, profile, done) => {
-    const pic = `https://graph.facebook.com/${profile.id}/picture?width=200&height=200&access_token=${accessToken}`;
+    const pic = `https://graph.facebook.com/${profile.id}/picture?width=200&height=200&access_token=${process.env.FACEBOOK_CLIENT_TOKEN}`;
     User.findOne({ uid: profile.id })
       .exec((err, user) => {
         if (err) { return done(err) };
@@ -39,6 +39,15 @@ exports.fb_login_redirect = (req, res, next) => {
     if (err) { return res.status(400).json(err) }
     const tokenizePayload = JSON.stringify(user._id);
     const token = jwt.sign(tokenizePayload, process.env.JWT_SECRET);
-    return res.redirect(`http://localhost:3000/login/${token}`)
+    return res.redirect(`${process.env.CLIENT_DOMAIN}/login/${token}`)
   })(req, res, next)
+}
+
+exports.search_user = (req, res, next) => {
+  User.find({ "display_name": { "$regex": req.body.q, "$options": "i" } }, "display_name uid")
+    .exec((err, user) => {
+      if (err) return res.status(400).json(err);
+      if (!user || user.length === 0) return res.status(404).json("No user found");
+      return res.json(user);
+    })
 }
