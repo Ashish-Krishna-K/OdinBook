@@ -1,23 +1,10 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { axiosAuthInstance } from "../helperModule";
+import { useNavigate, createSearchParams } from "react-router-dom";
 
 
 export default function SearchForm() {
   const navigate = useNavigate();
   const [searchInput, setSearchInput] = useState({ text: '' });
-
-  const submitSearchReqToServer = async (data) => {
-    try {
-      const res = await axiosAuthInstance.post('/users/search', data);
-      console.log(res.status, res.data);
-      if (res.status === 200) {
-        navigate('/user/search', { state: { results: res.data } });
-      }
-    } catch (error) {
-      console.log(error.response.data);
-    }
-  }
 
   const handleSearchInput = (e) => {
     setSearchInput({
@@ -27,7 +14,10 @@ export default function SearchForm() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    submitSearchReqToServer({ q: searchInput.text });
+    navigate({
+      pathname: '/user/search',
+      search: createSearchParams({ q: searchInput.text }).toString()
+    });
   }
 
   return (

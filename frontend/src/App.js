@@ -1,17 +1,23 @@
-import { useLoaderData, Navigate } from "react-router-dom";
+import { Navigate, Outlet, useLoaderData } from "react-router-dom";
+import { getAuthTokenFromLocalStorage, saveUserInfoInLocalStorage } from "./helperModule";
 import Header from "./components/Header";
+import { useEffect } from "react";
 
 export default function App() {
-  const authToken = useLoaderData();
+  const loader = useLoaderData();
+
+  useEffect(() => {
+    saveUserInfoInLocalStorage(loader);
+  }, [loader])
 
   return (
     <>
       {
-        !authToken ? <Navigate to="/login" /> :
+        !getAuthTokenFromLocalStorage() ? <Navigate to="/login" /> :
           <>
             <Header />
             <main>
-              <h2>Yet to implement</h2>
+              <Outlet />
             </main>
           </>
       }

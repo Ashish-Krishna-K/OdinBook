@@ -1,27 +1,46 @@
 import { createBrowserRouter } from "react-router-dom";
+import { getUserFromServer, getLoggedInUserFromServerAndSaveToLocalStorage } from "./loaders";
+
 import App from './App'
-import { getAuthTokenFromLocalStorage } from "./helperModule";
 import ErrorPage from "./pages/ErrorPage";
 import LoginPage from "./pages/LoginPage";
 import SearchUsers from "./pages/SearchUsersPage";
+import UserPage from "./pages/UserPage";
+import HomePage from "./pages/HomePage";
 
 const router = createBrowserRouter([
   {
     path: "/",
     element: <App />,
     errorElement: <ErrorPage />,
-    loader: () => getAuthTokenFromLocalStorage()
+    loader: (() => getLoggedInUserFromServerAndSaveToLocalStorage()),
+    children: [
+      {
+        path: "/",
+        element: <HomePage />,
+        errorElement: <ErrorPage />,
+      },
+      {
+        path: "/user/search",
+        element: <SearchUsers />,
+        errorElement: <ErrorPage />,
+      },
+      {
+        path: "/user/:id",
+        element: <UserPage />,
+        errorElement: <ErrorPage />,
+        loader: ({ params }) => {
+          return getUserFromServer(params)
+        },
+      }
+    ]
   },
   {
     path: "/login/:token?",
     element: <LoginPage />,
     errorElement: <ErrorPage />,
   },
-  {
-    path: "/user/search",
-    element: <SearchUsers />,
-    errorElement: <ErrorPage />,
-  }
+
 ])
 
-export default router
+export default router;

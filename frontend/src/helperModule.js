@@ -12,6 +12,14 @@ export const clearLocalStorage = () => {
   localStorage.clear();
 }
 
+export const saveUserInfoInLocalStorage = (user) => {
+  localStorage.setItem('USER', JSON.stringify(user));
+}
+
+export const getCurrentUserInfoFromLocalStorage = () => {
+  return JSON.parse(localStorage.getItem('USER'));
+}
+
 export const axiosAuthInstance = axios.create({
   baseURL: `${process.env.REACT_APP_API_DOMAIN}/api`,
   headers: {

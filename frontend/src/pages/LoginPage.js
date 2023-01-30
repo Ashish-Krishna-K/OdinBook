@@ -9,7 +9,7 @@ export default function LoginPage() {
   useEffect(() => {
     if (token) {
       saveTokenToLocalStorage(token);
-      navigate('/')
+      navigate('/');
     }
   })
 
