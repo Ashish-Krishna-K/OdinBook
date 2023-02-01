@@ -17,7 +17,7 @@ export const getUserFromServer = async (params) => {
   }
 };
 
-export const getLoggedInUserFromServerAndSaveToLocalStorage = async () => {
+export const getLoggedInUserFromServer = async () => {
   try {
     const res = await axiosAuthInstance.get('/users/login/user');
     return res.data;

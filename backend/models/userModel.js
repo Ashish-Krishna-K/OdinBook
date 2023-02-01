@@ -17,7 +17,6 @@ const UserSchema = new Schema({
 );
 
 UserSchema.virtual("display_picture").get(function () {
-  console.log(this.uid);
   return `https://graph.facebook.com/${this.uid}/picture?width=200&height=200&access_token=${process.env.FACEBOOK_CLIENT_TOKEN}`;
 })
 

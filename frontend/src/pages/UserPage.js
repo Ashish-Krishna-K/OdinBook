@@ -1,9 +1,7 @@
 import { useEffect } from "react";
 import { useLoaderData } from "react-router-dom";
 import { useImmer } from "use-immer";
-import FriendRequestButton from "../components/SendFriendRequest";
 import UserDetails from "../components/UserDetails";
-import { getCurrentUserInfoFromLocalStorage } from "../helperModule"
 
 export default function UserPage() {
   const user = useLoaderData();
@@ -15,7 +13,6 @@ export default function UserPage() {
     status: null,
     data: null,
   });
-  const [currentUser, setCurrentUser] = useImmer(() => getCurrentUserInfoFromLocalStorage());
 
   useEffect(() => {
     if (user.status === 200) {
@@ -37,12 +34,10 @@ export default function UserPage() {
         errors.data && <p>{errors.data}</p>
       }
       {
-        userState.data && <UserDetails user={userState.data} />
+        userState.data &&
+        <UserDetails user={userState.data} />
       }
-      {
-        userState.data && userState.data._id !== currentUser._id ?
-          <FriendRequestButton userId={userState.data._id}/> : <></>
-      }
+
     </>
   )
 
