@@ -1,5 +1,5 @@
 import { createBrowserRouter } from "react-router-dom";
-import { getUserFromServer, getLoggedInUserFromServer } from "./loaders";
+import { getUserFromServer } from "./helperModule";
 
 import App from './App'
 import ErrorPage from "./pages/ErrorPage";
@@ -13,7 +13,6 @@ const router = createBrowserRouter([
     path: "/",
     element: <App />,
     errorElement: <ErrorPage />,
-    loader: (() => getLoggedInUserFromServer()),
     children: [
       {
         path: "/",

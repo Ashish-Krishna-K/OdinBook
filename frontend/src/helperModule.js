@@ -20,9 +20,31 @@ export const getCurrentUserInfoFromLocalStorage = () => {
   return JSON.parse(localStorage.getItem('USER'));
 }
 
-export const axiosAuthInstance = axios.create({
-  baseURL: `${process.env.REACT_APP_API_DOMAIN}/api`,
-  headers: {
-    Authorization: `Bearer ${getAuthTokenFromLocalStorage()}`,
+export const generateAxiosInstance = () => {
+  const token = getAuthTokenFromLocalStorage();
+  if (!token) return null;
+  return axios.create({
+    baseURL: `${process.env.REACT_APP_API_DOMAIN}/api`,
+    headers: {
+      Authorization: `Bearer ${token}`,
+    }
+  })
+};
+
+export const getUserFromServer = async (params) => {
+  const instance = generateAxiosInstance();
+  try {
+    const res = await instance.get(`/users/${params.id}`);
+    const toReturn = {
+      status: res.status,
+      data: res.data,
+    }
+    return toReturn;
+  } catch (error) {
+    const toReturn = {
+      status: error.response.status,
+      data: error.response.data,
+    }
+    return toReturn;
   }
-})
+};

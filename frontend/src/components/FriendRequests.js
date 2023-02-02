@@ -1,15 +1,16 @@
 import { useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { useImmer } from "use-immer"
-import { axiosAuthInstance } from "../helperModule";
+import { generateAxiosInstance } from "../helperModule";
 
 export default function FriendRequests({ requestList }) {
   const { id } = useParams()
   const [userItems, setUserItems] = useImmer([]);
 
   const getUserInfoFromServer = async (requestId) => {
+    const instance = generateAxiosInstance();
     try {
-      const res = await axiosAuthInstance.get(`/users/${id}/request_list/${requestId}`)
+      const res = await instance.get(`/users/${id}/request_list/${requestId}`)
       setUserItems(userItems.concat(res.data));
     } catch (error) {
       console.log(error.response.data);
@@ -17,8 +18,9 @@ export default function FriendRequests({ requestList }) {
   }
 
   const updateFriendReqeuestAcceptedInServer = async (requestId) => {
+    const instance = generateAxiosInstance();
     try {
-      const res = await axiosAuthInstance.put(`/users/${id}/request_list/${requestId}/accept`)
+      const res = await instance.put(`/users/${id}/request_list/${requestId}/accept`)
       console.log(res.data);
       if (res.status === 200) {
         window.location.reload();

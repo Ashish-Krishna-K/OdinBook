@@ -1,9 +1,12 @@
+/*
 const passport = require('passport');
 const jwt = require('jsonwebtoken');
 const FacebookStrategy = require('passport-facebook');
 const passportJWT = require("passport-jwt");
 const JWTStrategy = passportJWT.Strategy;
 const ExtractJWT = passportJWT.ExtractJwt;
+
+const User = require('../models/userModel')
 
 passport.use(new FacebookStrategy(
   {
@@ -43,6 +46,11 @@ passport.use(new JWTStrategy({
   }
 ));
 
+*/
+
+const passport = require('passport');
+const jwt = require('jsonwebtoken');
+
 const User = require('../models/userModel');
 
 exports.login_with_fb = [
@@ -61,6 +69,7 @@ exports.fb_login_redirect = (req, res, next) => {
 exports.get_logged_in_user = (req, res, next) => {
   passport.authenticate('jwt', { session: false }, (err, user, msg) => {
     if (err) return res.status(400).json(err);
+    console.log(72, err, user, msg);
     if (!user) return res.status(404).json(msg);
     return res.json(user)
   })(req, res, next)

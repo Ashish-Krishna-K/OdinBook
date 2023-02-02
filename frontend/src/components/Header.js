@@ -1,5 +1,8 @@
 import { Link } from "react-router-dom";
-import { clearLocalStorage, getCurrentUserInfoFromLocalStorage } from "../helperModule";
+import {
+  clearLocalStorage,
+  getCurrentUserInfoFromLocalStorage
+} from "../helperModule";
 import SearchForm from "./SearchForm";
 import { useImmer } from "use-immer";
 
@@ -9,7 +12,8 @@ export default function Header() {
   const handleLogout = () => {
     clearLocalStorage();
     window.location.reload();
-  }
+  };
+
   return (
     <header>
       <h1>
@@ -17,7 +21,7 @@ export default function Header() {
       </h1>
       <SearchForm />
       <div>
-        <Link to={`/user/${currentUser._id}`}>{currentUser.display_name}</Link>
+        {currentUser ? <Link to={`/user/${currentUser._id}`}>{currentUser.display_name}</Link> : <p>Welcome</p>}
         <button onClick={handleLogout}>Logout</button>
       </div>
     </header>

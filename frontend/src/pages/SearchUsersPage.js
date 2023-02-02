@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import { useImmer } from "use-immer";
-import { axiosAuthInstance, getCurrentUserInfoFromLocalStorage } from "../helperModule";
+import { axiosAuthInstance, generateAxiosInstance, getCurrentUserInfoFromLocalStorage } from "../helperModule";
 
 export default function SearchUsers() {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -11,8 +11,9 @@ export default function SearchUsers() {
   const [error, setError] = useImmer();
 
   const submitSearchReqToServer = async (data) => {
+    const instance = generateAxiosInstance();
     try {
-      const res = await axiosAuthInstance.post('/users/search', { q: data });
+      const res = await instance.post('/users/search', { q: data });
       if (res.status === 200) {
         const rawSearchResults = res.data;
         const removedCurrentUserFromResults = rawSearchResults.filter(user => user._id !== currentUser._id);

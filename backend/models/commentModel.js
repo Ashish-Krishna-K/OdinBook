@@ -10,4 +10,4 @@ const CommentSchema = new Schema({
   comment_likes: [{ type: Schema.Types.ObjectId, ref: "User" }],
 })
 
-module.exports = mongoose.model("Post", CommentSchema);
+module.exports = mongoose.model("Comment", CommentSchema);

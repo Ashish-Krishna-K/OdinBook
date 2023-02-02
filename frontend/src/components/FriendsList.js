@@ -1,14 +1,15 @@
 import { useEffect } from "react";
 import { Link } from "react-router-dom";
 import { useImmer } from "use-immer";
-import { axiosAuthInstance } from "../helperModule";
+import { generateAxiosInstance } from "../helperModule";
 
 export default function FriendsList({ id }) {
   const [friends, setFriends] = useImmer([]);
 
   const getFriendsListFromServer = async (userId) => {
+    const instance = generateAxiosInstance();
     try {
-      const res = await axiosAuthInstance.get(`/users/${userId}/friends`);
+      const res = await instance.get(`/users/${userId}/friends`);
       setFriends(res.data);
     } catch (error) {
       console.log(error.response);
