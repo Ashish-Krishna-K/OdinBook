@@ -7,6 +7,8 @@ router.get('/', function (req, res, next) {
   return res.json({ message: 'not yet implemented' });
 });
 
-router.post('/create', )
+router.get('/:postId', PostController.get_post);
+
+router.post('/create', PostController.create_post);
 
 module.exports = router;

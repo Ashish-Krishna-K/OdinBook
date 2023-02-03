@@ -1,5 +1,10 @@
+import CreatePost from "../components/CreatePost";
+
 export default function HomePage() {
   return (
-    <h2>Not yet implemented</h2>
+    <section>
+      <h2>Home Page</h2>
+      <CreatePost />
+    </section>
   )
 }
