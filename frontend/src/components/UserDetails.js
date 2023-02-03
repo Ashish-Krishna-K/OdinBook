@@ -3,6 +3,7 @@ import { getCurrentUserInfoFromLocalStorage } from "../helperModule"
 import FriendRequestButton from "../components/SendFriendRequest";
 import FriendRequests from "./FriendRequests";
 import FriendsList from "./FriendsList";
+import ViewPost from "./ViewPost";
 
 export default function UserDetails({ user }) {
   const [currentUser, setCurrentUser] = useImmer(() => getCurrentUserInfoFromLocalStorage());
@@ -34,7 +35,11 @@ export default function UserDetails({ user }) {
         _id === currentUser._id &&
         <FriendRequests requestList={friend_requests} />
       }
-
+      <ul>Posts:
+        {
+          posts_list.map(post => <ViewPost key={post} id={post}/>)
+        }
+      </ul>
     </section>
   )
 }

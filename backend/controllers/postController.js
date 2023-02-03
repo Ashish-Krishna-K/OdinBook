@@ -39,8 +39,43 @@ exports.create_post = [
 
 exports.get_post = [
   passport.authenticate('jwt', {session: false}),
-  Post.findById(req.params.postId, (err, post) => {
-    if (err) return res.status(400).json(err);
-    return res.json(post)
-  })
-]
+  (req, res, next) => {
+    Post.findById(req.params.postId)
+    .populate("post_author")
+    .exec((err, post) => {
+      if (err) return res.status(400).json(err);
+      return res.json(post)
+    });
+  }
+];
+
+exports.like_post = [
+  passport.authenticate('jwt', {session: false}),
+  (req, res, next) => {
+    const whoLiked = req.user._id;
+    const whichPost = req.params.postId;
+    Post.findById(whichPost)
+      .populate("post_author")
+      .exec((err, post) => {
+        const likesArray = post.post_likes;
+        const doesExist = post.post_likes.some(id => id.equals(whoLiked));
+        if(doesExist) {
+          post.post_likes = post.post_likes.filter(id => !id.equals(whoLiked));
+          post.save((err, updatedPost) => {
+            if (err) return res.status(400).json(err);
+            return res.json(updatedPost);
+          })
+        } else {
+          post.post_likes.push(whoLiked);
+          post.save((err, updatedPost) => {
+            if (err) return res.status(400).json(err);
+            return res.json(updatedPost);
+          })
+        }
+      })
+  }
+];
+
+exports.edit_post = [];
+
+exports.delete_post = [];

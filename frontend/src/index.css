@@ -13,3 +13,11 @@ header {
   justify-content: space-around;
   align-items: center;
 }
+
+.blue {
+  background-color: blue;
+}
+
+.normal {
+  background-color: gray;
+}

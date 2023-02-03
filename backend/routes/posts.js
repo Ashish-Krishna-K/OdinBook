@@ -9,6 +9,12 @@ router.get('/', function (req, res, next) {
 
 router.get('/:postId', PostController.get_post);
 
+router.put('/:postId/like', PostController.like_post);
+
+router.put('/:postId/edit', PostController.edit_post);
+
+router.delete('/:postId', PostController.delete_post);
+
 router.post('/create', PostController.create_post);
 
 module.exports = router;
