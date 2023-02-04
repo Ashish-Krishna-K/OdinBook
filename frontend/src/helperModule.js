@@ -1,4 +1,5 @@
 import axios from "axios"
+import { format, parseISO } from "date-fns";
 
 export const getAuthTokenFromLocalStorage = () => {
   return JSON.parse(localStorage.getItem('AUTH_TOKEN')) || false
@@ -29,6 +30,11 @@ export const generateAxiosInstance = () => {
       Authorization: `Bearer ${token}`,
     }
   })
+};
+
+export const formatDatesForDisplay = (serverDate) => {
+  if (!serverDate) return;
+  return format(parseISO(serverDate), 'PPPp')
 };
 
 export const getUserFromServer = async (params) => {

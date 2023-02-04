@@ -1,13 +1,16 @@
 import { useEffect } from "react";
 import { useImmer } from "use-immer";
-import { generateAxiosInstance, getCurrentUserInfoFromLocalStorage } from "../helperModule";
+import { formatDatesForDisplay, generateAxiosInstance, getCurrentUserInfoFromLocalStorage } from "../helperModule";
+import AddComment from "./AddComment";
 import CreatePost from "./CreatePost";
+import ViewComment from "./ViewComment";
 
 export default function ViewPost({ id }) {
   const [currentUser, setCurrentUser] = useImmer(() => getCurrentUserInfoFromLocalStorage());
   const [post, setPost] = useImmer({});
   const [hasLiked, setHasLiked] = useImmer(false);
   const [editPostButtonClicked, setEditPostButtonClicked] = useImmer(false)
+  const [addCommentClicked, setAddCommentClicked] = useImmer(false);
 
   const getPostFromServer = async (postId) => {
     const instance = generateAxiosInstance();
@@ -31,6 +34,17 @@ export default function ViewPost({ id }) {
       console.log(error.response.data);
     }
   };
+  const deletePostFromServer = async (postId) => {
+    const instance = generateAxiosInstance();
+    try {
+      const res = await instance.delete(`/posts/${postId}`);
+      if (res.status === 200) {
+        window.location.reload();
+      }
+    } catch (error) {
+      console.log(error.response.data);
+    }
+  };
 
   useEffect(() => {
     getPostFromServer(id);
@@ -42,11 +56,17 @@ export default function ViewPost({ id }) {
     }
   }, [post]);
 
+  const handleEditButtonClick = () => setEditPostButtonClicked(!editPostButtonClicked);
+
+  const handleAddCommentBtnClick = () => setAddCommentClicked(!addCommentClicked);
+
   const handleLikeButton = () => {
     updateLikesToServer(id);
   };
 
-  const handleEditButtonClick = () => setEditPostButtonClicked(!editPostButtonClicked)
+  const handleDeleteButtonClick = () => {
+    deletePostFromServer(id);
+  };
 
   return (
     <>
@@ -59,11 +79,17 @@ export default function ViewPost({ id }) {
             </div>
             <div className="post-content-section">
               <p>{post.post_content}</p>
-              <p>{post.time_stamp}</p>
+              <p>{formatDatesForDisplay(post.time_stamp)}</p>
               <div className="post-controller-section">
                 <button className={hasLiked ? 'blue' : 'normal'} onClick={handleLikeButton}>Like</button>
-                <button>add comment</button>
                 {
+                  !addCommentClicked ? <button onClick={handleAddCommentBtnClick}>Add Comment</button> :
+                    <>
+                      <AddComment parentPost={post._id} />
+                      <button onClick={handleAddCommentBtnClick}>Cancel</button>
+                    </>
+                }
+                {post.post_author._id === currentUser._id &&
                   <>
                     {
                       !editPostButtonClicked ? <button onClick={handleEditButtonClick}>Edit Post</button> :
@@ -72,15 +98,24 @@ export default function ViewPost({ id }) {
                           <button onClick={handleEditButtonClick}>Cancel</button>
                         </>
                     }
+                    {
+                      <button onClick={handleDeleteButtonClick}>Delete Post</button>
+                    }
                   </>
                 }
+
               </div>
             </div>
             <div className="post-comments-section">
-              comments section
+              {
+                post.post_comments.length > 0 &&
+                <ul> Comments:
+                  {post.post_comments.map(comment => <ViewComment parentPost={post._id} commentId={comment} key={comment} />)}
+                </ul>
+              }
             </div>
           </div>
       }
     </>
   )
-}
+};

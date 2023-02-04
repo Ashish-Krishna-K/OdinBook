@@ -7,13 +7,6 @@ export default function HomePage() {
   return (
     <section>
       <h2>Home Page</h2>
-      {
-        !createPost ? <button onClick={handleCreateButtonClick}>Create Post</button> :
-          <>
-            <CreatePost />
-            <button onClick={handleCreateButtonClick}>Cancel</button>
-          </>
-      }
     </section>
   )
 }

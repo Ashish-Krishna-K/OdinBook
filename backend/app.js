@@ -83,7 +83,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/api', indexRouter);
 app.use('/api/users', usersRouter);
 app.use('/api/posts', postsRouter);
-app.use('/api/comments', commentsRouter);
+app.use('/api/posts/:postId/comments', commentsRouter);
 
 
 module.exports = app;

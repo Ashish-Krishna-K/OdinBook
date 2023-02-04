@@ -25,4 +25,9 @@ router.get('/:id/friends', UserController.get_friends_list);
 
 router.get('/:id', UserController.get_user_details);
 
+router.post('/testing/add/:item', UserController.testing_add);
+
+router.post('/testing/remove/:item', UserController.testing_remove);
+
+
 module.exports = router;

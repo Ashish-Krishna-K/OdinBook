@@ -48,33 +48,37 @@ exports.get_user_details = [
   }
 ];
 
-exports.post_friend_request = (req, res, next) => {
-  passport.authenticate('jwt', { session: false }, (err, user, msg) => {
-    if (err) return res.status(400).json(err);
-    const { _id } = user;
-    User.findById(req.body.id, (err, user) => {
+exports.post_friend_request = [
+  passport.authenticate('jwt', { session: false }),
+  (req, res, next) => {
+    const currentUser = req.user._id;
+    const targetUser = req.body.id;
+    User.findById(targetUser, (err, user) => {
       if (err) return res.status(400).json(err);
-      if (!user) return res.status(404).json(msg);
-      user.friend_requests.push(_id);
-      user.save((err) => {
-        if (err) return res.status(400).json(err);
-        return res.status(200).json("Friend Request sent");
-      });
+      if (!user) return res.status(404).json("OOPS! User not found!");
+      if (!user.friends_list.includes(currentUser)) {
+        user.friend_requests.push(currentUser);
+        user.save((err) => {
+          if (err) return res.status(400).json(err);
+          return res.status(200).json("Friend Request sent");
+        });
+      }
     })
-  })(req, res, next)
-};
+  }
+];
 
-exports.get_friends_list = (req, res, next) => {
-  passport.authenticate('jwt', { session: false }, (err, user, msg) => {
-    if (err) return res.status(400).json(err);
-    User.findById(user._id)
+exports.get_friends_list = [
+  passport.authenticate('jwt', { session: false }),
+  (req, res, next) => {
+    User.findById(req.user._id)
       .populate("friends_list", "display_name")
       .exec((err, user) => {
         if (err) return res.status(400).json(err);
         return res.json(user.friends_list);
       })
-  })(req, res, next)
-}
+  }
+];
+
 
 exports.get_friend_requests_info = [
   passport.authenticate('jwt', { session: false }),
@@ -88,33 +92,64 @@ exports.get_friend_requests_info = [
   }
 ];
 
-exports.accept_friend_request = (req, res, next) => {
-  passport.authenticate('jwt', { session: false }, (err, user, msg) => {
-    if (err) return res.status(400).json(err);
-    if (!user) return res.status(404).json(msg);
-    const currentUser = user._id;
-    const targetUser = req.params.requestId
+exports.accept_friend_request = [
+  passport.authenticate('jwt', { session: false }),
+  (req, res, next) => {
+    const currentUser = req.user._id;
+    const targetUser = req.params.requestId;
     User.findById(currentUser, (err, user) => {
       if (err) return res.status(400).json(err);
-      if (!targetUser) return res.status(404).json("User not found");
-      user.friend_requests = user.friend_requests.filter(id => !id.equals(targetUser));
-      if (!user.friends_list.includes(targetUser)) {
+      const isFriend = user.friends_list.includes(targetUser);
+      if (!isFriend) {
+        user.friend_requests.pull(targetUser);
         user.friends_list.push(targetUser);
+      } else {
+        user.friend_requests.pull(targetUser);
       }
-      user.save((err, updatedCurrentUser) => {
+      user.save((err) => {
         if (err) return res.status(400).json(err);
         User.findById(targetUser, (err, user) => {
           if (err) return res.status(400).json(err);
-          if (!user) return res.status(404).json(msg);
-          if (!user.friends_list.includes(updatedCurrentUser._id)) {
-            user.friends_list.push(updatedCurrentUser._id);
+          if (!user) return res.status(404).json("User not found");
+          const isAlreadyFriend = user.friends_list.includes(currentUser);
+          if (!isAlreadyFriend) {
+            user.friend_requests.pull(targetUser);
+            user.friends_list.push(targetUser);
+          } else {
+            user.friend_requests.pull(targetUser);
           }
           user.save((err) => {
             if (err) return res.status(400).json(err);
-            return res.status(200).json("Friend request accepted")
+            return res.json("Friend request accepted");
           })
         })
       })
     })
-  })(req, res, next)
-};
+  }
+];
+
+exports.testing_add = [
+  passport.authenticate('jwt', { session: false }),
+  (req, res, next) => {
+    User.findById(req.user.id, (err, user) => {
+      user.friend_requests.push(req.params.item);
+      user.save((err, user) => {
+        if (err) return res.status(400).json(err);
+        return res.json(user);
+      })
+    })
+  }
+];
+
+exports.testing_remove = [
+  passport.authenticate('jwt', { session: false }),
+  (req, res, next) => {
+    User.findById(req.user.id, (err, user) => {
+      user.friend_requests.pull(req.params.item);
+      user.save((err, user) => {
+        if (err) return res.status(400).json(err);
+        return res.json(user);
+      })
+    })
+  }
+]
