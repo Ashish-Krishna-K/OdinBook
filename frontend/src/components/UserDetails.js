@@ -7,7 +7,6 @@ import ViewPost from "./ViewPost";
 
 export default function UserDetails({ user }) {
   const [currentUser, setCurrentUser] = useImmer(() => getCurrentUserInfoFromLocalStorage());
-
   const {
     uid,
     email,
@@ -18,7 +17,6 @@ export default function UserDetails({ user }) {
     display_picture,
     _id,
   } = user;
-
   return (
     <section>
       <h3>{display_name}</h3>
@@ -37,7 +35,7 @@ export default function UserDetails({ user }) {
       }
       <ul>Posts:
         {
-          posts_list.map(post => <ViewPost key={post} id={post}/>)
+          posts_list.slice(0).reverse().map(post => <ViewPost key={post} id={post} />)
         }
       </ul>
     </section>

@@ -9,16 +9,15 @@ exports.create_post = [
   passport.authenticate('jwt', { session: false }),
   body("content")
     .trim()
-    .isLength({min: 1})
+    .isLength({ min: 1 })
     .withMessage("Content is required")
-    .isLength({max: 1024})
+    .isLength({ max: 1024 })
     .withMessage("Maximum character limit reached")
     .escape(),
   (req, res, next) => {
-    console.log(req.body);
     const author = req.user;
     const result = validationResult(req);
-    if(!result.isEmpty()) {
+    if (!result.isEmpty()) {
       return res.status(406).json(result.errors[0].msg)
     };
     const newPost = new Post({
@@ -38,28 +37,29 @@ exports.create_post = [
 ]
 
 exports.get_post = [
-  passport.authenticate('jwt', {session: false}),
+  passport.authenticate('jwt', { session: false }),
   (req, res, next) => {
     Post.findById(req.params.postId)
-    .populate("post_author")
-    .exec((err, post) => {
-      if (err) return res.status(400).json(err);
-      return res.json(post)
-    });
+      .populate("post_author")
+      .exec((err, post) => {
+        if (err) return res.status(400).json(err);
+        return res.json(post)
+      });
   }
 ];
 
 exports.like_post = [
-  passport.authenticate('jwt', {session: false}),
+  passport.authenticate('jwt', { session: false }),
   (req, res, next) => {
     const whoLiked = req.user._id;
     const whichPost = req.params.postId;
     Post.findById(whichPost)
       .populate("post_author")
       .exec((err, post) => {
+        if (err) return res.status(400).json(err);
         const likesArray = post.post_likes;
         const doesExist = post.post_likes.some(id => id.equals(whoLiked));
-        if(doesExist) {
+        if (doesExist) {
           post.post_likes = post.post_likes.filter(id => !id.equals(whoLiked));
           post.save((err, updatedPost) => {
             if (err) return res.status(400).json(err);
@@ -76,6 +76,29 @@ exports.like_post = [
   }
 ];
 
-exports.edit_post = [];
+exports.edit_post = [
+  passport.authenticate('jwt', { session: false }),
+  body("content")
+    .trim()
+    .isLength({ min: 1 })
+    .withMessage("Content is required")
+    .isLength({ max: 1024 })
+    .withMessage("Maximum character limit reached")
+    .escape(),
+  (req, res, next) => {
+    const result = validationResult(req);
+    if (!result.isEmpty()) {
+      return res.status(406).json(result.errors[0].msg)
+    };
+    Post.findById(req.params.postId, (err, post) => {
+      if (err) return res.status(400).json(err);
+      post.post_content = req.body.content;
+      post.save((err, updatedPost) => {
+        if (err) return res.status(400).json(err);
+        return res.json(updatedPost)
+      });
+    })
+  }
+];
 
 exports.delete_post = [];
