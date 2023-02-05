@@ -7,23 +7,29 @@ exports.login_with_fb = [
   passport.authenticate('facebook', { scope: ['email'] }),
 ];
 
-exports.fb_login_redirect = (req, res, next) => {
-  passport.authenticate('facebook', { session: false }, (err, user, msg) => {
-    if (err) { return res.status(400).json(err) }
-    const tokenizePayload = JSON.stringify(user._id);
-    const token = jwt.sign(tokenizePayload, process.env.JWT_SECRET);
-    return res.redirect(`${process.env.CLIENT_DOMAIN}/login/${token}`)
-  })(req, res, next)
-};
+exports.fb_login_redirect = [
+  passport.authenticate('facebook', { session: false }),
+  (req, res, next) => {
+    const redirectTo = req.get('Referer');
+    const jsonifiedPayload = JSON.stringify(req.user._id);
+    const token = jwt.sign(jsonifiedPayload, process.env.JWT_SECRET);
+    return res.redirect(`${redirectTo}login/${token}`)
+  }
+];
 
-exports.get_logged_in_user = (req, res, next) => {
-  passport.authenticate('jwt', { session: false }, (err, user, msg) => {
-    if (err) return res.status(400).json(err);
-    console.log(72, err, user, msg);
-    if (!user) return res.status(404).json(msg);
-    return res.json(user)
-  })(req, res, next)
-}
+exports.get_logged_in_user = [
+  passport.authenticate('jwt', { session: false }),
+  (req, res, next) => {
+    res.json(req.user);
+  }
+];
+
+exports.logout = (req, res, next) => {
+  req.logout((err) => {
+    if (err) return res.json(err);
+  });
+  return res.status(204).json("You have logged out!");
+};
 
 exports.search_user = [
   passport.authenticate('jwt', { session: false }),
@@ -79,7 +85,6 @@ exports.get_friends_list = [
   }
 ];
 
-
 exports.get_friend_requests_info = [
   passport.authenticate('jwt', { session: false }),
   (req, res, next) => {
@@ -127,29 +132,3 @@ exports.accept_friend_request = [
     })
   }
 ];
-
-exports.testing_add = [
-  passport.authenticate('jwt', { session: false }),
-  (req, res, next) => {
-    User.findById(req.user.id, (err, user) => {
-      user.friend_requests.push(req.params.item);
-      user.save((err, user) => {
-        if (err) return res.status(400).json(err);
-        return res.json(user);
-      })
-    })
-  }
-];
-
-exports.testing_remove = [
-  passport.authenticate('jwt', { session: false }),
-  (req, res, next) => {
-    User.findById(req.user.id, (err, user) => {
-      user.friend_requests.pull(req.params.item);
-      user.save((err, user) => {
-        if (err) return res.status(400).json(err);
-        return res.json(user);
-      })
-    })
-  }
-]

@@ -3,10 +3,6 @@ const router = express.Router({ mergeParams: true });
 
 const CommentController = require('../controllers/commentController');
 
-router.get('/', function (req, res, next) {
-  return res.json({ message: 'not yet implemented' });
-});
-
 router.get('/:commentId', CommentController.get_comment);
 
 router.put('/:commentId/like', CommentController.like_comment);
