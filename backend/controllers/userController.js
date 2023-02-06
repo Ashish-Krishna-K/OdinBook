@@ -2,6 +2,7 @@ const passport = require('passport');
 const jwt = require('jsonwebtoken');
 
 const User = require('../models/userModel');
+const { createFakeUsers } = require('../fakeData');
 
 exports.login_with_fb = [
   passport.authenticate('facebook', { scope: ['email'] }),
@@ -13,7 +14,7 @@ exports.fb_login_redirect = [
     const redirectTo = req.get('Referer');
     const jsonifiedPayload = JSON.stringify(req.user._id);
     const token = jwt.sign(jsonifiedPayload, process.env.JWT_SECRET);
-    return res.redirect(`${redirectTo}login/${token}`)
+    return res.redirect(`${redirectTo}login/${token}`);
   }
 ];
 
@@ -30,6 +31,22 @@ exports.logout = (req, res, next) => {
   });
   return res.status(204).json("You have logged out!");
 };
+
+exports.login_as_guest = (req, res, next) => {
+    const guestId = "63e0ceafc3f4f4d5abf3874e"
+    User.findById(guestId, "uid email display_name")
+      .exec((err, user) => {
+        if (err) return res.status(400).json(err);
+        if (!user) return res.status(404).json("OOPS, something went wrong. This action can't be completed.");
+          const payload = JSON.stringify(user.id);
+          const token = jwt.sign(payload, process.env.JWT_SECRET);
+          const result = {
+            token,
+            user
+          }
+          return res.json(result);
+      })
+  };
 
 exports.search_user = [
   passport.authenticate('jwt', { session: false }),
@@ -54,7 +71,7 @@ exports.get_user_details = [
   }
 ];
 
-exports.get_user_name  = [
+exports.get_user_name = [
   passport.authenticate('jwt', { session: false }),
   (req, res, next) => {
     User.findById(req.params.requestId, "display_name")

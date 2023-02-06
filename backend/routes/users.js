@@ -3,6 +3,8 @@ const router = express.Router();
 
 const UserController = require('../controllers/userController');
 
+router.get('/guest/login', UserController.login_as_guest);
+
 router.get('/login/facebook/redirect', UserController.fb_login_redirect);
 
 router.get('/login/facebook', UserController.login_with_fb);

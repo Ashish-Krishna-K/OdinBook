@@ -3,6 +3,7 @@ const { body, validationResult } = require("express-validator");
 const Post = require('../models/postModel');
 const User = require('../models/userModel');
 const Comment = require('../models/commentModel');
+const { createRandomLines } = require("../fakeData");
 
 exports.create_comment = [
   body("content")
@@ -128,4 +129,30 @@ exports.helperDeleteComment = async (postId, commentId) => {
   } catch (error) {
     return { noIssues: false, status: 400, msg: error }
   }
+};
+
+exports.create_fake_comments = (req, res, next) => {
+  Post.find({}, "id")
+    .exec((err, postsList) => {
+      if (err) return res.json(err);
+      const postsPromise = Promise.all(postsList.map(post => {
+        const newComment = new Comment({
+          comment_content: createRandomLines(),
+          time_stamp: Date.now(),
+          comment_author: req.params.id,
+          parent_post: post.id,
+        });
+        return newComment.save();
+      }))
+      postsPromise.then(data => {
+        const anotherPromise = Promise.all(data.map(cmnt => {
+          return Post.findByIdAndUpdate(cmnt.parent_post, {
+            $push: { post_comments: cmnt.id }
+          })
+        }))
+        anotherPromise.then(posts => res.json(posts));
+      }).catch(error => {
+        return res.json(error)
+      })
+    })
 }

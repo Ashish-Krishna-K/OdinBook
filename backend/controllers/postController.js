@@ -3,6 +3,7 @@ const { body, validationResult } = require("express-validator");
 const Post = require('../models/postModel');
 const User = require('../models/userModel');
 const CommentController = require('../controllers/commentController');
+const { createRandomLines } = require("../fakeData");
 
 exports.create_post = [
   body("content")
@@ -13,7 +14,7 @@ exports.create_post = [
     .withMessage("Maximum character limit reached")
     .escape(),
   (req, res, next) => {
-    const author = req.user;
+    const author = req.user.id;
     const result = validationResult(req);
     if (!result.isEmpty()) {
       return res.status(406).json(result.errors[0].msg)
@@ -21,15 +22,18 @@ exports.create_post = [
     const newPost = new Post({
       post_content: req.body.content,
       time_stamp: Date.now(),
-      post_author: author._id,
+      post_author: author,
     });
     newPost.save((err, post) => {
       if (err) return res.status(400).json(err);
-      author.posts_list.push(post._id);
-      author.save((err) => {
+      User.findById(author, (err, user) => {
         if (err) return res.status(400).json(err);
+        user.posts_list.push(post.id);
+        user.save((err) => {
+          if (err) return res.status(400).json(err);
+          return res.json(post);
+        })
       })
-      return res.json(post)
     })
   }
 ]
@@ -123,24 +127,51 @@ exports.delete_post = (req, res, next) => {
 };
 
 exports.get_newsfeed = (req, res, next) => {
-  const currentUser = req.user;
-  const selfLastPost = currentUser.posts_list[currentUser.posts_list.length - 1];
-  const friendsList = currentUser.friends_list;
-  const postsPromise = Promise.all(friendsList.map(async (friend) => {
-    const user = await User.findById(friend, "posts_list")
-    const postsCount = user.posts_list.length;
-    if (postsCount <= 0) return null;
-    const latestPost = user.posts_list[postsCount - 1];
-    return latestPost;
-  }));
-  postsPromise
-    .then(data => {
-      const toSend = data.filter(item => item);
-      toSend.push(selfLastPost); 
-      return res.json(toSend);
-    })
-    .catch(error => {
-      console.log(153, error);
-      return res.status(error.status).json(error)
+  User.findById(req.user.id, (err, currentUser) => {
+    const { id, friends_list, posts_list } = currentUser;
+    const postsPromise = Promise.all(friends_list.map(async (friend) => {
+      const friendDoc = await User.findById(friend, "posts_list")
+      const postsCount = friendDoc.posts_list.length;
+      if (postsCount <= 0) return null;
+      return friendDoc.posts_list[postsCount - 1];
+    }));
+    postsPromise
+      .then(data => {
+        if (posts_list.length > 0) {
+          const selfLastPost = posts_list[posts_list.length - 1];
+          const toSend = data.filter(item => item);
+          toSend.unshift(selfLastPost);
+          return res.json(toSend);
+        }
+      }).catch(error => {
+        return res.status(error.status).json(error);
+      })
+  })
+};
+
+
+exports.create_fake_posts = (req, res, next) => {
+  User.find({}, "id")
+    .exec((err, userList) => {
+      if (err) return res.json(err);
+      const usersPromise = Promise.all(userList.map(user => {
+        const newPost = new Post({
+          post_content: createRandomLines(),
+          time_stamp: Date.now(),
+          post_author: user.id
+        });
+        return newPost.save();
+      }))
+      usersPromise.then(data => {
+        const usersPromise = Promise.all(data.map(post => {
+          return User.findByIdAndUpdate(post.post_author, {
+            $push: { posts_list: post.id }
+          })
+        }))
+        usersPromise.then(users => res.json(users))
+      }).catch(error => {
+        return res.json(error)
+      })
     })
 };
+

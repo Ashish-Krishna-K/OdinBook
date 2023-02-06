@@ -1,4 +1,5 @@
 import { useNavigate, useParams } from "react-router-dom"
+import GuestLogin from "../components/GuestLogin";
 import {
   generateAxiosInstance,
   getAuthTokenFromLocalStorage,
@@ -37,6 +38,9 @@ export default function LoginPage() {
       {
         token ? <p>Please wait...</p> :
           <a href={`${process.env.REACT_APP_API_DOMAIN}/api/users/login/facebook`}>Login With Facebook</a>
+      }
+      {
+       <GuestLogin /> 
       }
     </>
   )

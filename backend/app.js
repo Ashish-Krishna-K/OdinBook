@@ -23,7 +23,7 @@ const passportJWT = require("passport-jwt");
 const JWTStrategy = passportJWT.Strategy;
 const ExtractJWT = passportJWT.ExtractJwt;
 
-const User = require('./models/userModel')
+const User = require('./models/userModel');
 
 passport.use(new FacebookStrategy(
   {
@@ -55,11 +55,13 @@ passport.use(new JWTStrategy({
   secretOrKey: process.env.JWT_SECRET
 },
   (jwtPayload, done) => {
-    User.findById(JSON.parse(jwtPayload), (err, user) => {
-      if (err) return done(err);
-      if (!user) return done(null, false, "User Not Found")
-      return done(null, user);
-    })
+    const id = JSON.parse(jwtPayload)
+    User.findById(id, "uid email display_name")
+      .exec((err, user) => {
+        if (err) return done(err);
+        if (!user) return done(null, false, "User Not Found")
+        return done(null, user);
+      })
   }
 ));
 
