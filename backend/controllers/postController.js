@@ -1,5 +1,3 @@
-const passport = require('passport');
-const jwt = require('jsonwebtoken');
 const { body, validationResult } = require("express-validator");
 
 const Post = require('../models/postModel');
@@ -7,7 +5,6 @@ const User = require('../models/userModel');
 const CommentController = require('../controllers/commentController');
 
 exports.create_post = [
-  passport.authenticate('jwt', { session: false }),
   body("content")
     .trim()
     .isLength({ min: 1 })
@@ -37,50 +34,43 @@ exports.create_post = [
   }
 ]
 
-exports.get_post = [
-  passport.authenticate('jwt', { session: false }),
-  (req, res, next) => {
-    Post.findById(req.params.postId)
-      .populate("post_author")
-      .exec((err, post) => {
-        if (err) return res.status(400).json(err);
-        if (!post) return res.status(404).json("Post not found. It may have been deleted or moved")
-        return res.json(post)
-      });
-  }
-];
+exports.get_post = (req, res, next) => {
+  Post.findById(req.params.postId)
+    .populate("post_author")
+    .exec((err, post) => {
+      if (err) return res.status(400).json(err);
+      if (!post) return res.status(404).json("Post not found. It may have been deleted or moved")
+      return res.json(post)
+    });
+};
 
-exports.like_post = [
-  passport.authenticate('jwt', { session: false }),
-  (req, res, next) => {
-    const whoLiked = req.user._id;
-    const whichPost = req.params.postId;
-    Post.findById(whichPost)
-      .populate("post_author")
-      .exec((err, post) => {
-        if (err) return res.status(400).json(err);
-        if (!post) return res.status(404).json("Post not found. It may have been deleted or moved");
-        const likesArray = post.post_likes;
-        const doesExist = post.post_likes.some(id => id.equals(whoLiked));
-        if (doesExist) {
-          post.post_likes = post.post_likes.filter(id => !id.equals(whoLiked));
-          post.save((err, updatedPost) => {
-            if (err) return res.status(400).json(err);
-            return res.json(updatedPost);
-          })
-        } else {
-          post.post_likes.push(whoLiked);
-          post.save((err, updatedPost) => {
-            if (err) return res.status(400).json(err);
-            return res.json(updatedPost);
-          })
-        }
-      })
-  }
-];
+exports.like_post = (req, res, next) => {
+  const whoLiked = req.user._id;
+  const whichPost = req.params.postId;
+  Post.findById(whichPost)
+    .populate("post_author")
+    .exec((err, post) => {
+      if (err) return res.status(400).json(err);
+      if (!post) return res.status(404).json("Post not found. It may have been deleted or moved");
+      const likesArray = post.post_likes;
+      const doesExist = post.post_likes.some(id => id.equals(whoLiked));
+      if (doesExist) {
+        post.post_likes = post.post_likes.filter(id => !id.equals(whoLiked));
+        post.save((err, updatedPost) => {
+          if (err) return res.status(400).json(err);
+          return res.json(updatedPost);
+        })
+      } else {
+        post.post_likes.push(whoLiked);
+        post.save((err, updatedPost) => {
+          if (err) return res.status(400).json(err);
+          return res.json(updatedPost);
+        })
+      }
+    })
+};
 
 exports.edit_post = [
-  passport.authenticate('jwt', { session: false }),
   body("content")
     .trim()
     .isLength({ min: 1 })
@@ -105,32 +95,52 @@ exports.edit_post = [
   }
 ];
 
-exports.delete_post = [
-  passport.authenticate('jwt', { session: false }),
-  (req, res, next) => {
-    Post.findById(req.params.postId, (err, post) => {
-      if (err) return res.status(400).json(err);
-      if (!post) return res.status(404).json("Post not found. It may have been deleted or moved");
-      const comments = post.post_comments;
-      const results = Promise.all(comments.map(async (comment) => {
-        return await CommentController.helperDeleteComment(post._id, comment);
-      }));
-      results.then(data => {
-        const ind = data.findIndex(({ noIssues }) => noIssues === false);
-        if (ind >= 0) return res.status(data[ind].status).json(data[ind].msg);
-        Post.findByIdAndDelete(req.params.postId, (err) => {
-          if (err) return res.status(400).json(err);
-          User.findByIdAndUpdate(req.user._id, { $pull: { posts_list: req.params.postId } })
-            .exec((err) => {
-              if (err) return res.status(400).json(err);
-              return res.json("Post Deleted");
-            })
+exports.delete_post = (req, res, next) => {
+  Post.findById(req.params.postId, (err, post) => {
+    if (err) return res.status(400).json(err);
+    if (!post) return res.status(404).json("Post not found. It may have been deleted or moved");
+    const comments = post.post_comments;
+    const results = Promise.all(comments.map(async (comment) => {
+      return await CommentController.helperDeleteComment(post._id, comment);
+    }));
+    results.then(data => {
+      const ind = data.findIndex(({ noIssues }) => noIssues === false);
+      if (ind >= 0) return res.status(data[ind].status).json(data[ind].msg);
+      Post.findByIdAndDelete(req.params.postId, (err) => {
+        if (err) return res.status(400).json(err);
+        User.findByIdAndUpdate(req.user._id, { $pull: { posts_list: req.params.postId } })
+          .exec((err) => {
+            if (err) return res.status(400).json(err);
+            return res.json("Post Deleted");
+          })
 
-        });
-      }).catch(error => {
-        console.log(error);
-        return res.status(error.status).json(error.msg);
-      })
-    });
-  }
-];
+      });
+    }).catch(error => {
+      console.log(error);
+      return res.status(error.status).json(error.msg);
+    })
+  });
+};
+
+exports.get_newsfeed = (req, res, next) => {
+  const currentUser = req.user;
+  const selfLastPost = currentUser.posts_list[currentUser.posts_list.length - 1];
+  const friendsList = currentUser.friends_list;
+  const postsPromise = Promise.all(friendsList.map(async (friend) => {
+    const user = await User.findById(friend, "posts_list")
+    const postsCount = user.posts_list.length;
+    if (postsCount <= 0) return null;
+    const latestPost = user.posts_list[postsCount - 1];
+    return latestPost;
+  }));
+  postsPromise
+    .then(data => {
+      const toSend = data.filter(item => item);
+      toSend.push(selfLastPost); 
+      return res.json(toSend);
+    })
+    .catch(error => {
+      console.log(153, error);
+      return res.status(error.status).json(error)
+    })
+};

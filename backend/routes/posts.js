@@ -3,6 +3,8 @@ const router = express.Router();
 
 const PostController = require('../controllers/postController');
 
+router.get('/newsfeed', PostController.get_newsfeed);
+
 router.get('/:postId', PostController.get_post);
 
 router.put('/:postId/like', PostController.like_post);

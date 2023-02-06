@@ -1,24 +1,23 @@
-import { useState } from "react";
 import { useNavigate, createSearchParams } from "react-router-dom";
+import { useImmer } from "use-immer";
 
 
 export default function SearchForm() {
   const navigate = useNavigate();
-  const [searchInput, setSearchInput] = useState({ text: '' });
+  const [searchInput, setSearchInput] = useImmer({ text: '' });
 
   const handleSearchInput = (e) => {
     setSearchInput({
       text: e.target.value
     })
-  }
-
+  };
   const handleSubmit = (e) => {
     e.preventDefault();
     navigate({
       pathname: '/user/search',
       search: createSearchParams({ q: searchInput.text }).toString()
     });
-  }
+  };
 
   return (
     <form onSubmit={handleSubmit}>

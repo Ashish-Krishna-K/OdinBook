@@ -13,13 +13,13 @@ router.delete('/logout', UserController.logout);
 
 router.post('/search', UserController.search_user);
 
-router.put('/:id/request_list/:requestId/accept', UserController.accept_friend_request);
-
-router.get('/:id/request_list/:requestId', UserController.get_friend_requests_info);
+router.put('/friend_request/:requestId/accept', UserController.accept_friend_request);
 
 router.post('/:id/friend_request', UserController.post_friend_request);
 
 router.get('/:id/friends', UserController.get_friends_list);
+
+router.get('/:id/short', UserController.get_user_name);
 
 router.get('/:id', UserController.get_user_details);
 

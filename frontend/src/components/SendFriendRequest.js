@@ -1,10 +1,9 @@
-import { axiosAuthInstance, generateAxiosInstance } from "../helperModule"
+import { generateAxiosInstance } from "../helperModule"
 
 const postFriendRequestToServer = async (data) => {
   const instance = generateAxiosInstance();
   try {
     const res = await instance.post('/users/:id/friend_request', data);
-    console.log(res.data);
     if (res.status === 200) {
       window.location.reload();
     }

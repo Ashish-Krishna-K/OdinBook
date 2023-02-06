@@ -1,13 +1,14 @@
 import { useEffect } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import { useImmer } from "use-immer";
-import { axiosAuthInstance, generateAxiosInstance, getCurrentUserInfoFromLocalStorage } from "../helperModule";
+import DisplayPicture from "../components/DPWithFallback";
+import { generateAxiosInstance, getCurrentUserInfoFromLocalStorage } from "../helperModule";
 
 export default function SearchUsers() {
   const [searchParams, setSearchParams] = useSearchParams();
   const query = searchParams.get('q');
   const [searchResults, setSearchResults] = useImmer([]);
-  const [currentUser, setCurrentUser] = useImmer(() => getCurrentUserInfoFromLocalStorage());
+  const currentUser = getCurrentUserInfoFromLocalStorage();
   const [error, setError] = useImmer();
 
   const submitSearchReqToServer = async (data) => {
@@ -41,7 +42,7 @@ export default function SearchUsers() {
                   searchResults.map(result => {
                     return (
                       <li key={result._id}>
-                        <img src={result.display_picture} alt={result.display_name} />
+                        <DisplayPicture src={result.display_picture} alt={result.display_name} />
                         <Link to={`/user/${result._id}`}>{result.display_name}</Link>
                       </li>
                     )

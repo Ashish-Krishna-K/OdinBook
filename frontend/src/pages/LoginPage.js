@@ -1,7 +1,10 @@
-import { useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom"
-import { generateAxiosInstance, getAuthTokenFromLocalStorage, saveTokenToLocalStorage, saveUserInfoInLocalStorage } from "../helperModule";
-
+import {
+  generateAxiosInstance,
+  getAuthTokenFromLocalStorage,
+  saveTokenToLocalStorage,
+  saveUserInfoInLocalStorage
+} from "../helperModule";
 
 export default function LoginPage() {
   const navigate = useNavigate();
@@ -21,16 +24,13 @@ export default function LoginPage() {
           getLoggedInUserFromServer()
         }
       }
-
     }
   }
 
-  useEffect(() => {
-    if (token) {
-      saveTokenToLocalStorage(token);
-      getLoggedInUserFromServer();
-    }
-  })
+  if (token) {
+    saveTokenToLocalStorage(token);
+    getLoggedInUserFromServer();
+  }
 
   return (
     <>

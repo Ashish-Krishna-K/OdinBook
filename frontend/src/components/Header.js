@@ -1,14 +1,13 @@
 import { Link } from "react-router-dom";
-import { useImmer } from "use-immer";
 import {
   getCurrentUserInfoFromLocalStorage
 } from "../helperModule";
 import SearchForm from "./SearchForm";
 import LogoutButton from "./LogoutButton";
+import DisplayPicture from "./DPWithFallback";
 
 export default function Header() {
-  const [currentUser, setCurrentUser] = useImmer(() => getCurrentUserInfoFromLocalStorage());
-
+  const currentUser = getCurrentUserInfoFromLocalStorage();
   return (
     <header>
       <h1>
@@ -16,7 +15,11 @@ export default function Header() {
       </h1>
       <SearchForm />
       <div>
-        {currentUser ? <Link to={`/user/${currentUser._id}`}>{currentUser.display_name}</Link> : <p>Welcome</p>}
+        {currentUser ?
+          <>
+            <DisplayPicture src={currentUser.display_picture} alt={currentUser.display_name} />
+            <Link to={`/user/${currentUser._id}`}>{currentUser.display_name}</Link>
+          </> : <p>Welcome</p>}
         <LogoutButton />
       </div>
     </header>

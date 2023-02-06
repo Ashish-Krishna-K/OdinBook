@@ -1,12 +1,15 @@
 import axios from "axios"
 import { format, parseISO } from "date-fns";
+import CryptoJS from "crypto-js";
 
 export const getAuthTokenFromLocalStorage = () => {
-  return JSON.parse(localStorage.getItem('AUTH_TOKEN')) || false
+  const token = JSON.parse(localStorage.getItem('AUTH_TOKEN'));
+  return !token ? false : CryptoJS.AES.decrypt(token, process.env.REACT_APP_ENCRYPTION_SECRET).toString(CryptoJS.enc.Utf8);
 }
 
 export const saveTokenToLocalStorage = (token) => {
-  localStorage.setItem('AUTH_TOKEN', JSON.stringify(token));
+  const encrypted = CryptoJS.AES.encrypt(token, process.env.REACT_APP_ENCRYPTION_SECRET).toString();
+  localStorage.setItem('AUTH_TOKEN', JSON.stringify(encrypted));
 }
 
 export const clearLocalStorage = () => {
@@ -37,20 +40,10 @@ export const formatDatesForDisplay = (serverDate) => {
   return format(parseISO(serverDate), 'PPPp')
 };
 
-export const getUserFromServer = async (params) => {
-  const instance = generateAxiosInstance();
-  try {
-    const res = await instance.get(`/users/${params.id}`);
-    const toReturn = {
-      status: res.status,
-      data: res.data,
-    }
-    return toReturn;
-  } catch (error) {
-    const toReturn = {
-      status: error.response.status,
-      data: error.response.data,
-    }
-    return toReturn;
-  }
+export const objectIsEmpty = (object) => {
+  return Object.keys(object).length === 0;
+};
+
+export const checkForEquality = (first, second) => {
+  return JSON.stringify(first) === JSON.stringify(second);
 };

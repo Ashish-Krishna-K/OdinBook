@@ -21,3 +21,8 @@ header {
 .normal {
   background-color: gray;
 }
+
+img {
+  width: 50px;
+  height: auto;
+}

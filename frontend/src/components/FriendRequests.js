@@ -1,39 +1,31 @@
 import { useEffect } from "react";
-import { useParams } from "react-router-dom";
 import { useImmer } from "use-immer"
 import { generateAxiosInstance } from "../helperModule";
+import DisplayPicture from "./DPWithFallback";
+
+const getUserInfoFromServer = async (requestId) => {
+  const instance = generateAxiosInstance();
+  return await instance.get(`/users/${requestId}/short`);
+};
+const updateFriendReqeuestAcceptedInServer = async (requestId) => {
+  const instance = generateAxiosInstance();
+  try {
+    const res = await instance.put(`/users/friend_request/${requestId}/accept`)
+    console.log(res.data);
+    if (res.status === 200) {
+      window.location.reload();
+    }
+  } catch (error) {
+    console.log(error.response.data);
+  }
+};
 
 export default function FriendRequests({ requestList }) {
-  const { id } = useParams()
   const [userItems, setUserItems] = useImmer([]);
 
-  const getUserInfoFromServer = async (requestId) => {
-    const instance = generateAxiosInstance();
-    try {
-      const res = await instance.get(`/users/${id}/request_list/${requestId}`)
-      setUserItems(userItems.concat(res.data));
-    } catch (error) {
-      console.log(error.response.data);
-    }
-  }
-
-  const updateFriendReqeuestAcceptedInServer = async (requestId) => {
-    const instance = generateAxiosInstance();
-    try {
-      const res = await instance.put(`/users/${id}/request_list/${requestId}/accept`)
-      console.log(res.data);
-      if (res.status === 200) {
-        window.location.reload();
-      }
-    } catch (error) {
-      console.log(error.response.data);
-    }
-  }
-
   useEffect(() => {
-    requestList.forEach(id => {
-      getUserInfoFromServer(id)
-    });
+    const usersListPromise = Promise.all(requestList.map(request => getUserInfoFromServer(request)));
+    usersListPromise.then(users => setUserItems(users)).catch(error => console.log(error));
   }, [requestList]);
 
   const handleAcceptClick = (e) => {
@@ -47,7 +39,7 @@ export default function FriendRequests({ requestList }) {
           return (
             <li key={item.id}>
               <p>{item.display_name}</p>
-              <img src={item.display_picture} alt={item.display_name} />
+              <DisplayPicture src={item.display_picture} alt={item.display_name} />
               <button onClick={handleAcceptClick} value={item._id}>Accept</button>
             </li>
           )

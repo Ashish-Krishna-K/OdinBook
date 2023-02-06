@@ -1,12 +1,12 @@
-import { useImmer } from "use-immer";
 import { getCurrentUserInfoFromLocalStorage } from "../helperModule"
-import FriendRequestButton from "../components/SendFriendRequest";
+import FriendRequestButton from "./SendFriendRequest";
 import FriendRequests from "./FriendRequests";
 import FriendsList from "./FriendsList";
 import ViewPost from "./ViewPost";
+import DisplayPicture from "./DPWithFallback";
 
 export default function UserDetails({ user }) {
-  const [currentUser, setCurrentUser] = useImmer(() => getCurrentUserInfoFromLocalStorage());
+  const currentUser = getCurrentUserInfoFromLocalStorage();
   const {
     uid,
     email,
@@ -17,10 +17,11 @@ export default function UserDetails({ user }) {
     display_picture,
     _id,
   } = user;
+  const reversedPostsList = posts_list.slice(0).reverse();
   return (
     <section>
       <h3>{display_name}</h3>
-      <img src={display_picture} alt={display_name} />
+      <DisplayPicture src={display_picture} alt={display_name} />
       {
         _id === currentUser._id &&
         <FriendsList id={currentUser._id} />
@@ -34,9 +35,7 @@ export default function UserDetails({ user }) {
         <FriendRequests requestList={friend_requests} />
       }
       <ul>Posts:
-        {
-          posts_list.slice(0).reverse().map(post => <ViewPost key={post} id={post} />)
-        }
+        {reversedPostsList.map(post => <ViewPost key={post} id={post} />)}
       </ul>
     </section>
   )

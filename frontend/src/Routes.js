@@ -1,5 +1,4 @@
 import { createBrowserRouter } from "react-router-dom";
-import { getUserFromServer } from "./helperModule";
 
 import App from './App'
 import ErrorPage from "./pages/ErrorPage";
@@ -25,12 +24,9 @@ const router = createBrowserRouter([
         errorElement: <ErrorPage />,
       },
       {
-        path: "/user/:id",
+        path: "/user/:userId",
         element: <UserPage />,
         errorElement: <ErrorPage />,
-        loader: ({ params }) => {
-          return getUserFromServer(params)
-        },
       }
     ]
   },

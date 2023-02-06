@@ -54,6 +54,18 @@ exports.get_user_details = [
   }
 ];
 
+exports.get_user_name  = [
+  passport.authenticate('jwt', { session: false }),
+  (req, res, next) => {
+    User.findById(req.params.requestId, "display_name")
+      .exec((err, user) => {
+        if (err) return res.status(400).json(err);
+        if (!user) return res.status(404).json("User not found");
+        return res.json(user);
+      })
+  }
+];
+
 exports.post_friend_request = [
   passport.authenticate('jwt', { session: false }),
   (req, res, next) => {
@@ -81,18 +93,6 @@ exports.get_friends_list = [
       .exec((err, user) => {
         if (err) return res.status(400).json(err);
         return res.json(user.friends_list);
-      })
-  }
-];
-
-exports.get_friend_requests_info = [
-  passport.authenticate('jwt', { session: false }),
-  (req, res, next) => {
-    User.findById(req.params.requestId, "display_name")
-      .exec((err, user) => {
-        if (err) return res.status(400).json(err);
-        if (!user) return res.status(404).json("User not found");
-        return res.json(user);
       })
   }
 ];

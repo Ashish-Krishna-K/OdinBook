@@ -3,12 +3,13 @@ import { useImmer } from "use-immer";
 import { formatDatesForDisplay, generateAxiosInstance, getCurrentUserInfoFromLocalStorage } from "../helperModule";
 import AddComment from "./AddComment";
 import CreatePost from "./CreatePost";
+import DisplayPicture from "./DPWithFallback";
 import ViewComment from "./ViewComment";
 
 export default function ViewPost({ id }) {
-  const [currentUser, setCurrentUser] = useImmer(() => getCurrentUserInfoFromLocalStorage());
+  const currentUser = getCurrentUserInfoFromLocalStorage();
   const [post, setPost] = useImmer({});
-  const [hasLiked, setHasLiked] = useImmer(false);
+  let hasLiked = false;
   const [editPostButtonClicked, setEditPostButtonClicked] = useImmer(false)
   const [addCommentClicked, setAddCommentClicked] = useImmer(false);
 
@@ -49,24 +50,18 @@ export default function ViewPost({ id }) {
   useEffect(() => {
     getPostFromServer(id);
   }, [id]);
-  useEffect(() => {
-    if (post.hasOwnProperty('_id')) {
-      const result = post.post_likes.some(id => id === currentUser._id);
-      setHasLiked(result);
-    }
-  }, [post]);
+  if (post.hasOwnProperty('_id')) {
+    const result = post.post_likes.some(id => id === currentUser._id);
+    hasLiked = result;
+  };
 
   const handleEditButtonClick = () => setEditPostButtonClicked(!editPostButtonClicked);
 
   const handleAddCommentBtnClick = () => setAddCommentClicked(!addCommentClicked);
 
-  const handleLikeButton = () => {
-    updateLikesToServer(id);
-  };
+  const handleLikeButton = () => updateLikesToServer(id);
 
-  const handleDeleteButtonClick = () => {
-    deletePostFromServer(id);
-  };
+  const handleDeleteButtonClick = () => deletePostFromServer(id);
 
   return (
     <>
@@ -74,7 +69,7 @@ export default function ViewPost({ id }) {
         !post.hasOwnProperty('_id') ? <p>Loading...</p> :
           <div>
             <div className="post-author-section">
-              <img src={post.post_author.display_picture} alt={post.post_author.display_name} />
+              <DisplayPicture src={post.post_author.display_picture} alt={post.post_author.display_name} />
               <p>{post.post_author.display_name}</p>
             </div>
             <div className="post-content-section">

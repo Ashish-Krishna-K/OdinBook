@@ -2,11 +2,12 @@ import { useEffect } from "react";
 import { useImmer } from "use-immer";
 import { formatDatesForDisplay, generateAxiosInstance, getCurrentUserInfoFromLocalStorage } from "../helperModule";
 import AddComment from "./AddComment";
+import DisplayPicture from "./DPWithFallback";
 
 export default function ViewComment({ parentPost, commentId }) {
-  const [currentUser, setCurrentUser] = useImmer(() => getCurrentUserInfoFromLocalStorage());
+  const currentUser = getCurrentUserInfoFromLocalStorage();
   const [comment, setComment] = useImmer({});
-  const [hasLiked, setHasLiked] = useImmer(false);
+  let hasLiked = false;
   const [editCommentBtnClicked, setEditCommentBtnClicked] = useImmer(false);
 
   const getCommentFromServer = async (id) => {
@@ -46,12 +47,11 @@ export default function ViewComment({ parentPost, commentId }) {
   useEffect(() => {
     getCommentFromServer(commentId);
   }, [commentId]);
-  useEffect(() => {
-    if (comment.hasOwnProperty('_id')) {
-      const result = comment.comment_likes.some(id => id === currentUser._id);
-      setHasLiked(result);
-    }
-  }, [comment]);
+
+  if (comment.hasOwnProperty('_id')) {
+    const result = comment.comment_likes.some(id => id === currentUser._id);
+    hasLiked = result;
+  }
 
   const handleEditButtonClick = () => setEditCommentBtnClicked(!editCommentBtnClicked);
 
@@ -65,7 +65,7 @@ export default function ViewComment({ parentPost, commentId }) {
         !comment.hasOwnProperty('_id') ? <p>Loading...</p> :
           <div>
             <div className="comment-author-section">
-              <img src={comment.comment_author.display_picture} alt={comment.comment_author.display_name} />
+              <DisplayPicture src={comment.comment_author.display_picture} alt={comment.comment_author.display_name} />
               <p>{comment.comment_author.display_name}</p>
             </div>
             <div className="comment-content-secion">
