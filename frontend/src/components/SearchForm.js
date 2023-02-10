@@ -1,3 +1,6 @@
+import Icon from '@mdi/react';
+import { mdiMagnify } from '@mdi/js';
+
 import { useNavigate, createSearchParams } from "react-router-dom";
 import { useImmer } from "use-immer";
 
@@ -20,10 +23,12 @@ export default function SearchForm() {
   };
 
   return (
-    <form onSubmit={handleSubmit}>
+    <form className="search-form" onSubmit={handleSubmit}>
       <label htmlFor="search"></label>
       <input id="search" name="q" type="search" onChange={handleSearchInput} value={searchInput.text} required />
-      <button>Search</button>
+      <button>
+        <Icon path={mdiMagnify} size="2.3vmax"/>
+      </button>
     </form>
   )
 }

@@ -1,10 +1,73 @@
+@import url('https://fonts.googleapis.com/css2?family=Ruda:wght@400;500;600;700;800;900&display=swap');
+
 html,
 body,
+.backdrop,
 #root {
   margin: 0;
   padding: 0;
-  min-height: 100%;
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  height: 100%;
+  overflow: hidden;
+  min-width: 100%;
+  font-family: 'Ruda', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+}
+
+* {
+  margin: 0.5vmax;
+}
+
+img {
+  width: 50px;
+  height: auto;
+}
+
+svg {
+  margin: 0;
+}
+
+button:has(svg) {
+  background: none;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+}
+
+button:has(svg):hover {
+
+  background: black;
+  color: white;
+}
+
+span.blue,
+border .liked {
+  color: blue;
+}
+
+.not-liked {
+  color: none;
+}
+
+#root {
+  display: flex;
+  flex-direction: column;
+}
+
+.backdrop {
+  pointer-events: none;
+  position: fixed;
+  inset: 0;
+  background: #000;
+  opacity: 0%;
+}
+
+.dim-backdrop {
+  opacity: 70%;
+}
+
+.user-name-and-image {
+  display: flex;
+  align-items: center;
 }
 
 header {
@@ -12,17 +75,204 @@ header {
   border: 1px solid black;
   justify-content: space-around;
   align-items: center;
+  margin: 0;
 }
 
-.blue {
+.search-form {
+  display: flex;
+}
+
+header>h1 {
+  font-weight: 900;
+}
+
+.current-user-section {
+  display: flex;
+  align-items: center;
+}
+
+.user-info {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.logout-btn {
+  display: flex;
+  align-items: center;
+}
+
+main {
+  overflow: auto;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.shrink-horizontally {
+  width: 75%;
+}
+
+ul {
+  padding: 0;
+  list-style: none;
+}
+
+li {
+  margin: inherit;
+}
+
+.heading {
+  text-align: center;
+}
+
+.news-feed h3 {
+  margin-left: 2vmax;
+}
+
+.news-feed li {
+  margin: 5vh;
+}
+
+button#create-post {
+  min-height: 12vh;
+  min-width: 48vw;
+}
+
+section.create-post {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 14vh;
+}
+
+.create-post-form-section,
+.add-comment-form-section {
+  border: 1px solid black;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.create-post-form,
+.add-comment-form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.create-post-form>textarea,
+.add-comment-form>textarea {
+  width: 48vw;
+  height: 12vh;
+  resize: none;
+}
+
+.modal {
   background-color: blue;
+  color: white;
+  position: absolute;
+  top: 25%;
+  left: 25%;
 }
 
-.normal {
-  background-color: gray;
+.cancel-btn {
+  align-self: flex-end;
 }
 
-img {
-  width: 50px;
-  height: auto;
+.post,
+.comment {
+  border: 1px solid black;
+  display: flex;
+  flex-direction: column;
+}
+
+.post-author-section,
+.comment-author-section {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1vmax;
+}
+
+.post-author-details,
+.comment-author-details {
+  display: flex;
+  align-items: center;
+}
+
+.post-content-section,
+.comment-content-section {
+  height: 11vh;
+  padding: 1vmax;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.post-controller-section,
+.comment-controller-section {
+  padding: 1vmax;
+  display: flex;
+  align-items: center;
+}
+
+.post-interaction-section,
+.comment-interaction-section {
+  display: flex;
+}
+
+.post-comments-section {
+  padding: 1vmax;
+  margin: 0;
+  border-top: 1px solid black;
+}
+
+.error {
+  font-weight: bold;
+  color: red;
+}
+
+.highlight {
+  border: 1px solid yellow;
+  background-color: yellow;
+  color: blue;
+}
+
+section.user-details-section {
+  display: flex;
+  justify-content: space-between;
+}
+
+.user-friends-section {
+  display: flex;
+}
+
+.user-page-navigation {
+  border: 1px solid black;
+  margin: 0;
+}
+
+.user-page-navigation>ul {
+  display: flex;
+}
+
+.dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+.liked-users-list {
+  position: absolute;
+  background-color: black;
+  color: white;
+  width: max-content;
+  margin: 0;
+  padding: 0;
+  border: 1px solid black;
+}
+
+.liked-users-list>li {
+  margin: 0;
 }

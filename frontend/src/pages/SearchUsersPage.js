@@ -9,16 +9,21 @@ export default function SearchUsers() {
   const query = searchParams.get('q');
   const [searchResults, setSearchResults] = useImmer([]);
   const currentUser = getCurrentUserInfoFromLocalStorage();
-  const [error, setError] = useImmer();
+  const [error, setError] = useImmer(null);
 
   const submitSearchReqToServer = async (data) => {
     const instance = generateAxiosInstance();
     try {
       const res = await instance.post('/users/search', { q: data });
       if (res.status === 200) {
+        setError(null);
         const rawSearchResults = res.data;
-        const removedCurrentUserFromResults = rawSearchResults.filter(user => user._id !== currentUser._id);
-        setSearchResults(removedCurrentUserFromResults);
+        if (rawSearchResults.length > 1) {
+          const removedCurrentUserFromResults = rawSearchResults.filter(user => user._id !== currentUser._id);
+          setSearchResults(removedCurrentUserFromResults);
+        } else {
+          setSearchResults(rawSearchResults);
+        }
       }
     } catch (error) {
       console.log(error.response.data);

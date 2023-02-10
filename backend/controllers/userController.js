@@ -33,20 +33,20 @@ exports.logout = (req, res, next) => {
 };
 
 exports.login_as_guest = (req, res, next) => {
-    const guestId = "63e0ceafc3f4f4d5abf3874e"
-    User.findById(guestId, "uid email display_name")
-      .exec((err, user) => {
-        if (err) return res.status(400).json(err);
-        if (!user) return res.status(404).json("OOPS, something went wrong. This action can't be completed.");
-          const payload = JSON.stringify(user.id);
-          const token = jwt.sign(payload, process.env.JWT_SECRET);
-          const result = {
-            token,
-            user
-          }
-          return res.json(result);
-      })
-  };
+  const guestId = "63e0ceafc3f4f4d5abf3874e"
+  User.findById(guestId, "uid email display_name")
+    .exec((err, user) => {
+      if (err) return res.status(400).json(err);
+      if (!user) return res.status(404).json("OOPS, something went wrong. This action can't be completed.");
+      const payload = JSON.stringify(user.id);
+      const token = jwt.sign(payload, process.env.JWT_SECRET);
+      const result = {
+        token,
+        user
+      }
+      return res.json(result);
+    })
+};
 
 exports.search_user = [
   passport.authenticate('jwt', { session: false }),
@@ -74,7 +74,7 @@ exports.get_user_details = [
 exports.get_user_name = [
   passport.authenticate('jwt', { session: false }),
   (req, res, next) => {
-    User.findById(req.params.requestId, "display_name")
+    User.findById(req.params.id, "display_name")
       .exec((err, user) => {
         if (err) return res.status(400).json(err);
         if (!user) return res.status(404).json("User not found");
@@ -105,7 +105,7 @@ exports.post_friend_request = [
 exports.get_friends_list = [
   passport.authenticate('jwt', { session: false }),
   (req, res, next) => {
-    User.findById(req.user._id)
+    User.findById(req.params.id)
       .populate("friends_list", "display_name")
       .exec((err, user) => {
         if (err) return res.status(400).json(err);

@@ -3,9 +3,8 @@ import { useImmer } from "use-immer"
 import { generateAxiosInstance } from "../helperModule";
 
 export default function AddComment({ parentPost, commentId, content }) {
-  const [comment, setComment] = useImmer({ content: '' });
+  const [comment, setComment] = useImmer({ content: content });
   const [error, setError] = useImmer({ value: '' });
-  const [characterCount, setCharacterCount] = useImmer({ value: '' });
   const [isEditComment, setIsEditComment] = useImmer(false);
 
   const postCommentToServer = async (data) => {
@@ -46,10 +45,6 @@ export default function AddComment({ parentPost, commentId, content }) {
     setComment({
       content: e.target.value
     });
-    const count = 1024 - e.target.value.length;
-    setCharacterCount({
-      value: count
-    });
   };
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -61,18 +56,16 @@ export default function AddComment({ parentPost, commentId, content }) {
   };
 
   return (
-    <>
-      <form onSubmit={handleSubmit}>
-        <textarea
-          value={comment.content}
-          onChange={handleInput}
-          placeholder="Add comment..."
-          maxLength="1024"
-        ></textarea>
-        <span>{`${characterCount.value} of 1024 left`}</span>
-        <button type="submit">Submit</button>
-      </form>
-      {error.value && <p>{error.value}</p>}
-    </>
+    <form className="add-comment-form" onSubmit={handleSubmit}>
+      <textarea
+        value={comment.content}
+        onChange={handleInput}
+        placeholder="Add comment..."
+        maxLength="1024"
+      ></textarea>
+      {comment.content ? <p>{`${1024 - comment.content.length} of 1024 left`}</p> : <p>1024 of 1024 left</p>}
+      {error.value && <p className="error">{error.value}</p>}
+      <button type="submit">Submit</button>
+    </form>
   )
 }

@@ -22,7 +22,7 @@ export default function FriendsList({ id }) {
   }, [id]);
 
   return (
-    <ul> Friends:
+    <ul> {friends.length} Friends:
       {
         friends.length !== 0 && friends.map(friend => {
           return (

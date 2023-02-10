@@ -1,10 +1,29 @@
 import { useEffect } from "react";
 import { useImmer } from "use-immer";
-import { formatDatesForDisplay, generateAxiosInstance, getCurrentUserInfoFromLocalStorage } from "../helperModule";
+import { Link } from "react-router-dom";
+import Icon from '@mdi/react';
+import {
+  mdiThumbUp,
+  mdiClose,
+  mdiDeleteForever,
+  mdiCommentPlus,
+  mdiComment,
+  mdiSquareEditOutline,
+} from '@mdi/js';
+
+import {
+  formatDatesForDisplay,
+  generateAxiosInstance,
+  getCurrentUserInfoFromLocalStorage,
+  objectIsEmpty,
+  toggleBackdrop
+} from "../helperModule";
+
 import AddComment from "./AddComment";
 import CreatePost from "./CreatePost";
 import DisplayPicture from "./DPWithFallback";
 import ViewComment from "./ViewComment";
+import ViewLikes from "./ViewLikes";
 
 export default function ViewPost({ id }) {
   const currentUser = getCurrentUserInfoFromLocalStorage();
@@ -12,6 +31,7 @@ export default function ViewPost({ id }) {
   let hasLiked = false;
   const [editPostButtonClicked, setEditPostButtonClicked] = useImmer(false)
   const [addCommentClicked, setAddCommentClicked] = useImmer(false);
+  const [viewLikes, setViewLikes] = useImmer(false);
 
   const getPostFromServer = async (postId) => {
     const instance = generateAxiosInstance();
@@ -50,67 +70,128 @@ export default function ViewPost({ id }) {
   useEffect(() => {
     getPostFromServer(id);
   }, [id]);
-  if (post.hasOwnProperty('_id')) {
+
+  if (!objectIsEmpty(post)) {
     const result = post.post_likes.some(id => id === currentUser._id);
     hasLiked = result;
   };
 
-  const handleEditButtonClick = () => setEditPostButtonClicked(!editPostButtonClicked);
+  const handleEditButtonClick = () => {
+    setEditPostButtonClicked(!editPostButtonClicked);
+    toggleBackdrop();
+  };
 
-  const handleAddCommentBtnClick = () => setAddCommentClicked(!addCommentClicked);
+  const handleAddCommentBtnClick = () => {
+    setAddCommentClicked(!addCommentClicked);
+    toggleBackdrop();
+  };
 
   const handleLikeButton = () => updateLikesToServer(id);
+
+  const handleViewLikesButton = () => setViewLikes(!viewLikes);
 
   const handleDeleteButtonClick = () => deletePostFromServer(id);
 
   return (
-    <>
+    <li>
       {
-        !post.hasOwnProperty('_id') ? <p>Loading...</p> :
-          <div>
+        objectIsEmpty(post) ? <p>Loading...</p> :
+          <div className="post">
             <div className="post-author-section">
-              <DisplayPicture src={post.post_author.display_picture} alt={post.post_author.display_name} />
-              <p>{post.post_author.display_name}</p>
-            </div>
-            <div className="post-content-section">
-              <p>{post.post_content}</p>
-              <p>{formatDatesForDisplay(post.time_stamp)}</p>
+              <div className="post-author-details">
+                <DisplayPicture src={post.post_author.display_picture} alt={post.post_author.display_name} />
+                <div>
+                  <Link to={`/user/${post.post_author.id}`}>
+                    {post.post_author.display_name}
+                  </Link>
+                  <p>{formatDatesForDisplay(post.time_stamp)} ago</p>
+                </div>
+              </div>
               <div className="post-controller-section">
-                <button className={hasLiked ? 'blue' : 'normal'} onClick={handleLikeButton}>Like</button>
-                {
-                  !addCommentClicked ? <button onClick={handleAddCommentBtnClick}>Add Comment</button> :
-                    <>
-                      <AddComment parentPost={post._id} />
-                      <button onClick={handleAddCommentBtnClick}>Cancel</button>
-                    </>
-                }
                 {post.post_author._id === currentUser._id &&
                   <>
                     {
-                      !editPostButtonClicked ? <button onClick={handleEditButtonClick}>Edit Post</button> :
-                        <>
+                      !editPostButtonClicked ?
+                        <button onClick={handleEditButtonClick}>
+                          <Icon path={mdiSquareEditOutline} size="2.3vmax" />
+                          <span>Edit Post</span>
+                        </button> :
+                        <div className="create-post-form-section modal">
+                          <button
+                            className="cancel-btn"
+                            onClick={handleEditButtonClick}
+                          >
+                            <Icon path={mdiClose} size="2.3vmax" />
+                          </button>
                           <CreatePost content={post.post_content} postId={post._id} />
-                          <button onClick={handleEditButtonClick}>Cancel</button>
-                        </>
+                        </div>
                     }
                     {
-                      <button onClick={handleDeleteButtonClick}>Delete Post</button>
+                      <button onClick={handleDeleteButtonClick}>
+                        <Icon path={mdiDeleteForever} size="2.3vmax" />
+                        <span>Delete Post</span>
+                      </button>
                     }
                   </>
                 }
-
               </div>
             </div>
-            <div className="post-comments-section">
+            <div className="post-content-section">
+              <p>{post.post_content}</p>
+              <div>
+                <span className="dropdown">
+                  {
+                    post.post_likes.length > 0 ?
+                      <>
+                        <button
+                          className="view-likes-btn"
+                          onClick={handleViewLikesButton}
+                        >
+                          <Icon path={mdiThumbUp} size="2.3vmax" />
+                          <span>{post.post_likes.length} Likes</span>
+                        </button>
+                        {viewLikes && <ViewLikes likesList={post.post_likes} />}
+                      </> : <span>{post.post_likes.length} Likes</span>
+                  }
+                </span>
+                <span>
+                  {post.post_comments.length} Comments
+                </span>
+              </div>
+            </div>
+            <div className="post-interaction-section">
+              <button className={hasLiked ? 'liked' : 'not-liked'} onClick={handleLikeButton}>
+                <Icon path={mdiThumbUp} size="2.3vmax" />
+                <span>Like</span>
+              </button>
               {
-                post.post_comments.length > 0 &&
+                !addCommentClicked ?
+                  <button onClick={handleAddCommentBtnClick}>
+                    <Icon path={mdiCommentPlus} size="2.3vmax" />
+                    <span>Comment</span>
+                  </button> :
+                  <div className="add-comment-form-section modal">
+                    <button
+                      className="cancel-btn"
+                      onClick={handleAddCommentBtnClick}
+                    >
+                      <Icon path={mdiClose} size="2.3vmax" />
+                    </button>
+                    <AddComment parentPost={post._id} />
+                  </div>
+              }
+            </div>
+            {
+              post.post_comments.length > 0 &&
+              <div className="post-comments-section">
                 <ul> Comments:
                   {post.post_comments.map(comment => <ViewComment parentPost={post._id} commentId={comment} key={comment} />)}
                 </ul>
-              }
-            </div>
+              </div>
+
+            }
           </div>
       }
-    </>
+    </li>
   )
 };

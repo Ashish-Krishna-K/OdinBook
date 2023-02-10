@@ -1,14 +1,17 @@
-import { useEffect } from "react";
 import { useImmer } from "use-immer"
 import { generateAxiosInstance } from "../helperModule";
 
 export default function CreatePost({ content, postId }) {
-  const [postContent, setPostContent] = useImmer({ value: '' });
-  const [characterCount, setCharacterCount] = useImmer({ value: '' });
+  const [postContent, setPostContent] = useImmer({ value: content });
   const [isEditPost, setIsEditPost] = useImmer(false);
   const [error, setError] = useImmer({
     value: ''
-  })
+  });
+
+  if (content && !isEditPost) {
+    setIsEditPost(true);
+  }
+
   const submitPostDataToServer = async (data) => {
     const instance = generateAxiosInstance();
     try {
@@ -29,19 +32,10 @@ export default function CreatePost({ content, postId }) {
       console.log(error.response.status, error.response.data);
       setError({ value: error.response.data });
     }
-  }
-  useEffect(() => {
-    if (content) {
-      setPostContent({
-        value: content
-      })
-      setIsEditPost(true);
-    }
-  }, [content])
+  };
+
   const handleInput = (e) => {
     setPostContent({ value: e.target.value });
-    const count = 1024 - e.target.value.length;
-    setCharacterCount({ value: count });
   }
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -52,19 +46,16 @@ export default function CreatePost({ content, postId }) {
     }
   }
   return (
-    <>
-      <form onSubmit={handleSubmit}>
-        <textarea
-          value={postContent.value}
-          onChange={handleInput}
-          placeholder="Add a post..."
-          maxLength="1024"
-        ></textarea>
-        <span>{`${characterCount.value} of 1024 left`}</span>
-        <button type="submit">Submit</button>
-      </form>
-      {error.value && <p>{error.value}</p>}
-    </>
-
+    <form className="create-post-form" onSubmit={handleSubmit}>
+      <textarea
+        value={postContent.value}
+        onChange={handleInput}
+        placeholder="Add a post..."
+        maxLength="1024"
+      ></textarea>
+      {postContent.value ? <p>{`${1024 - postContent.value.length} of 1024 left`}</p> : <p>1024 of 1024 left</p>}
+      {error.value && <p className="error">{error.value}</p>}
+      <button type="submit">Submit</button>
+    </form>
   )
 }

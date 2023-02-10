@@ -1,5 +1,5 @@
 import axios from "axios"
-import { format, parseISO } from "date-fns";
+import { parseISO, formatDistanceToNow } from "date-fns";
 import CryptoJS from "crypto-js";
 
 export const getAuthTokenFromLocalStorage = () => {
@@ -37,7 +37,7 @@ export const generateAxiosInstance = () => {
 
 export const formatDatesForDisplay = (serverDate) => {
   if (!serverDate) return;
-  return format(parseISO(serverDate), 'PPPp')
+  return formatDistanceToNow(parseISO(serverDate));
 };
 
 export const objectIsEmpty = (object) => {
@@ -47,3 +47,13 @@ export const objectIsEmpty = (object) => {
 export const checkForEquality = (first, second) => {
   return JSON.stringify(first) === JSON.stringify(second);
 };
+
+export const toggleBackdrop = () => {
+  const root = document.querySelector('.backdrop');
+  root.classList.toggle('dim-backdrop');
+}
+
+export const getCurrentPathEnd = (path) => {
+  const matchedPath = path.match(/\/[a-z]+$/g);
+  return matchedPath ? matchedPath[0] : undefined
+}

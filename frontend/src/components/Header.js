@@ -14,13 +14,12 @@ export default function Header() {
         <Link to="/">Odin Book</Link>
       </h1>
       <SearchForm />
-      <div>
-        {currentUser ?
-          <>
-            <DisplayPicture src={currentUser.display_picture} alt={currentUser.display_name} />
-            <Link to={`/user/${currentUser._id}`}>{currentUser.display_name}</Link>
-          </> : <p>Welcome</p>}
-        <LogoutButton />
+      <div className="current-user-section">
+        <DisplayPicture src={currentUser.display_picture} alt={currentUser.display_name} />
+        <div className="user-info">
+          <Link to={`/user/${currentUser._id}`}>{currentUser.display_name}</Link>
+          <LogoutButton />
+        </div>
       </div>
     </header>
   )

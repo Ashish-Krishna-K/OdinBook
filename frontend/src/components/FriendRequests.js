@@ -7,7 +7,7 @@ const getUserInfoFromServer = async (requestId) => {
   const instance = generateAxiosInstance();
   return await instance.get(`/users/${requestId}/short`);
 };
-const updateFriendReqeuestAcceptedInServer = async (requestId) => {
+const acceptFriendRequestToServer = async (requestId) => {
   const instance = generateAxiosInstance();
   try {
     const res = await instance.put(`/users/friend_request/${requestId}/accept`)
@@ -25,16 +25,20 @@ export default function FriendRequests({ requestList }) {
 
   useEffect(() => {
     const usersListPromise = Promise.all(requestList.map(request => getUserInfoFromServer(request)));
-    usersListPromise.then(users => setUserItems(users)).catch(error => console.log(error));
+    usersListPromise.then(users => {
+      const extractedData = users.map(user => user.data);
+      const removedDupes = Array.from(new Set(extractedData));
+      setUserItems(removedDupes);
+    }).catch(error => console.log(error.response));
   }, [requestList]);
 
   const handleAcceptClick = (e) => {
-    updateFriendReqeuestAcceptedInServer(e.target.value);
+    acceptFriendRequestToServer(e.target.value);
   }
 
   return (
     <ul> Friend Requests:
-      {
+      {userItems.length > 0 &&
         userItems.map(item => {
           return (
             <li key={item.id}>

@@ -30,14 +30,19 @@ export default function HomePage() {
     })
   const uniqueFeed = Array.from(new Set(feed));
   return (
-    <section>
-      <h2>Home Page</h2>
-      {
-        feed &&
-        <ul>Feed:
-          {uniqueFeed.map(post => <ViewPost key={post} id={post} />)}
-        </ul>
-      }
+    <section className="content">
+      <div className="heading">
+        <h2>Home Page</h2>
+      </div>
+      <div className="news-feed">
+        {
+          feed &&
+          <ul>
+            {uniqueFeed.map(post => <ViewPost key={post} id={post} />)}
+          </ul>
+        }
+      </div>
+
     </section>
   )
 }
