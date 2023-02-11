@@ -3,9 +3,12 @@ import { mdiMagnify } from '@mdi/js';
 
 import { useNavigate, createSearchParams } from "react-router-dom";
 import { useImmer } from "use-immer";
+import { useContext } from 'react';
+import { ThemeContext } from '../App';
 
 
 export default function SearchForm() {
+  const { theme } = useContext(ThemeContext);
   const navigate = useNavigate();
   const [searchInput, setSearchInput] = useImmer({ text: '' });
 
@@ -25,9 +28,17 @@ export default function SearchForm() {
   return (
     <form className="search-form" onSubmit={handleSubmit}>
       <label htmlFor="search"></label>
-      <input id="search" name="q" type="search" onChange={handleSearchInput} value={searchInput.text} required />
-      <button>
-        <Icon path={mdiMagnify} size="2.3vmax"/>
+      <input
+        id="search"
+        className={theme === 'dark' ? 'dark-theme' : undefined}
+        name="q"
+        type="search"
+        onChange={handleSearchInput}
+        value={searchInput.text}
+        required
+      />
+      <button className={theme === 'dark' ? 'dark-theme' : undefined}>
+        <Icon path={mdiMagnify} size={1} />
       </button>
     </form>
   )

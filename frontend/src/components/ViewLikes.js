@@ -1,4 +1,7 @@
+import { useContext } from "react";
+import { Link } from "react-router-dom";
 import { useImmer } from "use-immer"
+import { ThemeContext } from "../App";
 import { checkForEquality, generateAxiosInstance } from "../helperModule";
 
 const getLikedUserInfoFromServer = async (userId) => {
@@ -7,6 +10,7 @@ const getLikedUserInfoFromServer = async (userId) => {
 }
 
 export default function ViewLikes({ likesList }) {
+  const { theme } = useContext(ThemeContext);
   const [likedUsers, setLikedUsers] = useImmer([]);
   const likesListPromise = Promise.all(likesList.map(user => getLikedUserInfoFromServer(user)));
   likesListPromise.then(users => {
@@ -19,10 +23,16 @@ export default function ViewLikes({ likesList }) {
     }
   }).catch(error => console.log(error.response));
   return (
-    <ul className="liked-users-list">
+    <ul className={theme === 'dark' ? 'dark-theme liked-users-list' : 'liked-users-list'}>
       {
         likedUsers.length === 0 ? <li>Loading...</li> :
-          likedUsers.map(user => <li key={user.id}>{user.display_name}</li>)
+          likedUsers.map(user => {
+            return (
+              <li className="liked-users" key={user.id}>
+                <Link to={`/user/${user.id}`}>{user.display_name}</Link>
+              </li>
+            )
+          })
       }
     </ul>
   )

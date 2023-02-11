@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useContext, useEffect } from "react";
 import { useImmer } from "use-immer";
 import { Link } from "react-router-dom";
 import Icon from '@mdi/react';
@@ -7,8 +7,9 @@ import {
   mdiClose,
   mdiDeleteForever,
   mdiCommentPlus,
-  mdiComment,
   mdiSquareEditOutline,
+  mdiDotsHorizontal,
+  mdiCommentTextMultiple,
 } from '@mdi/js';
 
 import {
@@ -24,14 +25,18 @@ import CreatePost from "./CreatePost";
 import DisplayPicture from "./DPWithFallback";
 import ViewComment from "./ViewComment";
 import ViewLikes from "./ViewLikes";
+import { ThemeContext } from "../App";
 
 export default function ViewPost({ id }) {
+  const { theme } = useContext(ThemeContext);
   const currentUser = getCurrentUserInfoFromLocalStorage();
   const [post, setPost] = useImmer({});
   let hasLiked = false;
   const [editPostButtonClicked, setEditPostButtonClicked] = useImmer(false)
   const [addCommentClicked, setAddCommentClicked] = useImmer(false);
   const [viewLikes, setViewLikes] = useImmer(false);
+  const [showComments, setShowComments] = useImmer(false);
+  const [showPostControllerMenu, setShowPostControllerMenu] = useImmer(false);
 
   const getPostFromServer = async (postId) => {
     const instance = generateAxiosInstance();
@@ -92,11 +97,15 @@ export default function ViewPost({ id }) {
 
   const handleDeleteButtonClick = () => deletePostFromServer(id);
 
+  const handleShowComments = () => setShowComments(!showComments);
+
+  const handleShowMenu = () => setShowPostControllerMenu(!showPostControllerMenu);
+
   return (
     <li>
       {
         objectIsEmpty(post) ? <p>Loading...</p> :
-          <div className="post">
+          <div className={theme === 'dark' ? "dark-theme post" : "post"}>
             <div className="post-author-section">
               <div className="post-author-details">
                 <DisplayPicture src={post.post_author.display_picture} alt={post.post_author.display_name} />
@@ -107,30 +116,54 @@ export default function ViewPost({ id }) {
                   <p>{formatDatesForDisplay(post.time_stamp)} ago</p>
                 </div>
               </div>
-              <div className="post-controller-section">
-                {post.post_author._id === currentUser._id &&
+              <div className="post-controller-section dropdown">
+                {
+                  post.post_author._id === currentUser._id &&
                   <>
                     {
-                      !editPostButtonClicked ?
-                        <button onClick={handleEditButtonClick}>
-                          <Icon path={mdiSquareEditOutline} size="2.3vmax" />
-                          <span>Edit Post</span>
-                        </button> :
-                        <div className="create-post-form-section modal">
-                          <button
-                            className="cancel-btn"
-                            onClick={handleEditButtonClick}
-                          >
-                            <Icon path={mdiClose} size="2.3vmax" />
-                          </button>
-                          <CreatePost content={post.post_content} postId={post._id} />
-                        </div>
+                      <button
+                        className={theme === 'dark' ? "dark-theme" : undefined}
+                        onClick={handleShowMenu}
+                      >
+                        <Icon path={mdiDotsHorizontal} size={1} />
+                      </button>
                     }
                     {
-                      <button onClick={handleDeleteButtonClick}>
-                        <Icon path={mdiDeleteForever} size="2.3vmax" />
-                        <span>Delete Post</span>
-                      </button>
+                      showPostControllerMenu &&
+                      <ul className={theme === 'dark' ? 'dark-theme controller' : 'controller'}>
+                        <li>
+                          {
+                            !editPostButtonClicked ?
+                              <button
+                                className={theme === 'dark' ? "dark-theme" : undefined}
+                                onClick={handleEditButtonClick}
+                              >
+                                <Icon path={mdiSquareEditOutline} size={1} />
+                                <span>Edit Post</span>
+                              </button> :
+                              <div className="create-post-form-section modal">
+                                <button
+                                  className={theme === 'dark' ? 'dark-theme cancel-btn' : 'cancel-btn'}
+                                  onClick={handleEditButtonClick}
+                                >
+                                  <Icon path={mdiClose} size={1} />
+                                </button>
+                                <CreatePost content={post.post_content} postId={post._id} />
+                              </div>
+                          }
+                        </li>
+                        <li>
+                          {
+                            <button
+                              className={theme === 'dark' ? "dark-theme" : undefined}
+                              onClick={handleDeleteButtonClick}
+                            >
+                              <Icon path={mdiDeleteForever} size={1} />
+                              <span>Delete Post</span>
+                            </button>
+                          }
+                        </li>
+                      </ul>
                     }
                   </>
                 }
@@ -138,20 +171,24 @@ export default function ViewPost({ id }) {
             </div>
             <div className="post-content-section">
               <p>{post.post_content}</p>
-              <div>
+              <div className={theme === 'dark' ? 'post-stats dark-theme' : 'post-stats'}>
                 <span className="dropdown">
                   {
                     post.post_likes.length > 0 ?
                       <>
                         <button
-                          className="view-likes-btn"
+                          className={theme === 'dark' ? 'dark-theme view-likes-btn' : 'view-likes-btn'}
                           onClick={handleViewLikesButton}
                         >
-                          <Icon path={mdiThumbUp} size="2.3vmax" />
+                          <Icon path={mdiThumbUp} size={1} />
                           <span>{post.post_likes.length} Likes</span>
                         </button>
                         {viewLikes && <ViewLikes likesList={post.post_likes} />}
-                      </> : <span>{post.post_likes.length} Likes</span>
+                      </> :
+                      <div className={theme === 'dark' ? 'dark-theme view-likes-btn' : 'view-likes-btn'}>
+                        <Icon path={mdiThumbUp} size={1} />
+                        <span>{post.post_likes.length} Likes</span>
+                      </div>
                   }
                 </span>
                 <span>
@@ -160,22 +197,27 @@ export default function ViewPost({ id }) {
               </div>
             </div>
             <div className="post-interaction-section">
-              <button className={hasLiked ? 'liked' : 'not-liked'} onClick={handleLikeButton}>
-                <Icon path={mdiThumbUp} size="2.3vmax" />
+              <button
+                className={hasLiked ? 'liked' : theme === 'dark' ? 'dark-theme' : undefined}
+                onClick={handleLikeButton}
+              >
+                <Icon path={mdiThumbUp} size={1} />
                 <span>Like</span>
               </button>
               {
                 !addCommentClicked ?
-                  <button onClick={handleAddCommentBtnClick}>
-                    <Icon path={mdiCommentPlus} size="2.3vmax" />
+                  <button
+                    className={theme === 'dark' ? 'dark-theme' : undefined}
+                    onClick={handleAddCommentBtnClick}>
+                    <Icon path={mdiCommentPlus} size={1} />
                     <span>Comment</span>
                   </button> :
                   <div className="add-comment-form-section modal">
                     <button
-                      className="cancel-btn"
+                      className={theme === 'dark' ? 'dark-theme cancel-btn' : 'cancel-btn'}
                       onClick={handleAddCommentBtnClick}
                     >
-                      <Icon path={mdiClose} size="2.3vmax" />
+                      <Icon path={mdiClose} size={1} />
                     </button>
                     <AddComment parentPost={post._id} />
                   </div>
@@ -184,11 +226,19 @@ export default function ViewPost({ id }) {
             {
               post.post_comments.length > 0 &&
               <div className="post-comments-section">
-                <ul> Comments:
-                  {post.post_comments.map(comment => <ViewComment parentPost={post._id} commentId={comment} key={comment} />)}
-                </ul>
+                <button
+                  className={theme === 'dark' ? 'dark-theme' : undefined}
+                  onClick={handleShowComments}>
+                  <Icon path={mdiCommentTextMultiple} size={1} />
+                  <span>Comments</span>
+                </button>
+                {
+                  showComments &&
+                  <ul>
+                    {post.post_comments.map(comment => <ViewComment parentPost={post._id} commentId={comment} key={comment} />)}
+                  </ul>
+                }
               </div>
-
             }
           </div>
       }

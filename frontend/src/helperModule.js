@@ -5,23 +5,32 @@ import CryptoJS from "crypto-js";
 export const getAuthTokenFromLocalStorage = () => {
   const token = JSON.parse(localStorage.getItem('AUTH_TOKEN'));
   return !token ? false : CryptoJS.AES.decrypt(token, process.env.REACT_APP_ENCRYPTION_SECRET).toString(CryptoJS.enc.Utf8);
-}
+};
 
 export const saveTokenToLocalStorage = (token) => {
   const encrypted = CryptoJS.AES.encrypt(token, process.env.REACT_APP_ENCRYPTION_SECRET).toString();
   localStorage.setItem('AUTH_TOKEN', JSON.stringify(encrypted));
-}
+};
 
 export const clearLocalStorage = () => {
   localStorage.clear();
-}
+};
 
 export const saveUserInfoInLocalStorage = (user) => {
   localStorage.setItem('USER', JSON.stringify(user));
-}
+};
 
 export const getCurrentUserInfoFromLocalStorage = () => {
   return JSON.parse(localStorage.getItem('USER'));
+};
+
+export const setThemePreferenceToLocalStorage = (theme) => {
+  localStorage.setItem("THEME", JSON.stringify(theme));
+};
+
+export const getThemePreferenceFromLocalStorage = () => {
+  const theme = localStorage.getItem("THEME");
+  return theme ? JSON.parse(theme) : null;
 }
 
 export const generateAxiosInstance = () => {
@@ -49,11 +58,17 @@ export const checkForEquality = (first, second) => {
 };
 
 export const toggleBackdrop = () => {
-  const root = document.querySelector('.backdrop');
+  const root = document.querySelector('#backdrop');
   root.classList.toggle('dim-backdrop');
 }
 
 export const getCurrentPathEnd = (path) => {
   const matchedPath = path.match(/\/[a-z]+$/g);
   return matchedPath ? matchedPath[0] : undefined
+}
+
+export const rootRef = {
+  html: document.querySelector('html'),
+  body: document.querySelector('body'),
+  root: document.querySelector('#root')
 }

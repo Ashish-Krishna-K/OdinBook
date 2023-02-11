@@ -17,7 +17,7 @@ export default function LogoutButton() {
     <button
       className="logout-btn"
       onClick={postLogoutToServer}>
-      <Icon path={mdiLogout} size="2.3vmax" />
+      <Icon path={mdiLogout} size={1} />
       <span>Logout</span>
     </button>
   )

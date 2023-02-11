@@ -1,5 +1,6 @@
-import { useEffect } from "react";
+import { useContext, useEffect } from "react";
 import { useImmer } from "use-immer"
+import { ThemeContext } from "../App";
 import { generateAxiosInstance } from "../helperModule";
 import DisplayPicture from "./DPWithFallback";
 
@@ -21,6 +22,7 @@ const acceptFriendRequestToServer = async (requestId) => {
 };
 
 export default function FriendRequests({ requestList }) {
+  const { theme } = useContext(ThemeContext);
   const [userItems, setUserItems] = useImmer([]);
 
   useEffect(() => {
@@ -41,7 +43,7 @@ export default function FriendRequests({ requestList }) {
       {userItems.length > 0 &&
         userItems.map(item => {
           return (
-            <li key={item.id}>
+            <li className={theme === 'dark' ? 'dark-theme minimal-user-display' : 'minimal-user-display'} key={item.id}>
               <p>{item.display_name}</p>
               <DisplayPicture src={item.display_picture} alt={item.display_name} />
               <button onClick={handleAcceptClick} value={item._id}>Accept</button>

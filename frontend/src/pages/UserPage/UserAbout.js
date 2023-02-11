@@ -4,8 +4,11 @@ import {
   objectIsEmpty,
 } from "../../helperModule";
 import FriendRequestButton from "../../components/SendFriendRequest";
+import { useContext } from "react";
+import { ThemeContext } from "../../App";
 
 export default function UserAbout() {
+  const { theme } = useContext(ThemeContext);
   const currentUser = getCurrentUserInfoFromLocalStorage();
   const userToDisplay = useOutletContext();
   const {
@@ -26,7 +29,7 @@ export default function UserAbout() {
           <div>
             {
               id !== currentUser.id &&
-              <div className="friend-request-section">
+              <div className={theme === 'dark' ? 'friend-request-section dark-theme' : 'friend-request-section'}>
                 {
                   checkIfFriendRequestExists() ? <p>Request Sent</p> :
                     <FriendRequestButton userId={id} friends={friends_list} currentUser={currentUser.id} />

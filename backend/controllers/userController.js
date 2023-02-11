@@ -8,15 +8,30 @@ exports.login_with_fb = [
   passport.authenticate('facebook', { scope: ['email'] }),
 ];
 
-exports.fb_login_redirect = [
+exports.fb_login_redirect = (req, res, next) => {
+  passport.authenticate('facebook', { session: false }, (err, user, msg) => {
+    if (err) return res.status(400).redirect(`${process.env.CLIENT_DOMAIN}login`);
+    if (!user) return res.status(401).redirect(`${process.env.CLIENT_DOMAIN}login`);
+    console.log(user);
+    const jsonifiedPayload = JSON.stringify(user.id);
+    const token = jwt.sign(jsonifiedPayload, process.env.JWT_SECRET);
+    return res.redirect(`${process.env.CLIENT_DOMAIN}login/${token}`);
+  })(req, res, next)
+};
+
+/* 
+[
   passport.authenticate('facebook', { session: false }),
   (req, res, next) => {
+    console.log(req.query);
+    console.log(JSON.stringify(req.headers));
     const redirectTo = req.get('Referer');
     const jsonifiedPayload = JSON.stringify(req.user._id);
     const token = jwt.sign(jsonifiedPayload, process.env.JWT_SECRET);
     return res.redirect(`${redirectTo}login/${token}`);
   }
-];
+]
+*/
 
 exports.get_logged_in_user = [
   passport.authenticate('jwt', { session: false }),

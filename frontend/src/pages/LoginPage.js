@@ -34,14 +34,19 @@ export default function LoginPage() {
   }
 
   return (
-    <>
-      {
-        token ? <p>Please wait...</p> :
-          <a href={`${process.env.REACT_APP_API_DOMAIN}/api/users/login/facebook`}>Login With Facebook</a>
-      }
-      {
-       <GuestLogin /> 
-      }
-    </>
+    <section id="login-page">
+      <h1>ODINBOOK</h1>
+      <div className="login-section">
+        {
+          token ? <p>Please wait...</p> :
+            <div className="login-modal">
+              <button className="login-with-fb-btn">
+                <a href={`${process.env.REACT_APP_API_DOMAIN}/api/users/login/facebook`}>Login With Facebook</a>
+              </button>
+              <GuestLogin />
+            </div>
+        }
+      </div>
+    </section>
   )
 }

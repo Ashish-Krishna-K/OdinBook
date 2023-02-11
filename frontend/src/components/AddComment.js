@@ -65,7 +65,7 @@ export default function AddComment({ parentPost, commentId, content }) {
       ></textarea>
       {comment.content ? <p>{`${1024 - comment.content.length} of 1024 left`}</p> : <p>1024 of 1024 left</p>}
       {error.value && <p className="error">{error.value}</p>}
-      <button type="submit">Submit</button>
+      <button className="submit-btn" type="submit">Submit</button>
     </form>
   )
 }

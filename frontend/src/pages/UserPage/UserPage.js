@@ -12,6 +12,8 @@ import {
   getCurrentPathEnd,
 } from "../../helperModule";
 import DisplayPicture from "../../components/DPWithFallback";
+import { useContext } from "react";
+import { ThemeContext } from "../../App";
 
 const getUserFromServer = async (id) => {
   const instance = generateAxiosInstance();
@@ -19,6 +21,7 @@ const getUserFromServer = async (id) => {
 };
 
 export default function UserPage() {
+  const { theme } = useContext(ThemeContext)
   const currentUser = getCurrentUserInfoFromLocalStorage();
   const location = useLocation();
   const { userId } = useParams();
@@ -92,10 +95,12 @@ export default function UserPage() {
           }
         </ul>
       </nav>
-      <section>
+      <section className={theme === 'dark' ? 'dark-theme' : undefined}>
         {
           !objectIsEmpty(userToDisplay) &&
-          <section className="user-name-and-image">
+          <section
+            className={theme === 'dark' ? 'dark-theme user-name-and-image' : 'user-name-and-image'}
+          >
             <DisplayPicture src={display_picture} alt={display_name} />
             <h3>{display_name}</h3>
           </section>

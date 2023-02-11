@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useContext, useEffect } from "react";
 import { useImmer } from "use-immer";
 import { Link } from "react-router-dom";
 import Icon from '@mdi/react';
@@ -7,6 +7,7 @@ import {
   mdiClose,
   mdiDeleteForever,
   mdiCommentEdit,
+  mdiDotsHorizontal
 } from '@mdi/js';
 import {
   formatDatesForDisplay,
@@ -17,13 +18,16 @@ import {
 import AddComment from "./AddComment";
 import DisplayPicture from "./DPWithFallback";
 import ViewLikes from "./ViewLikes";
+import { ThemeContext } from "../App";
 
 export default function ViewComment({ parentPost, commentId }) {
+  const { theme } = useContext(ThemeContext);
   const currentUser = getCurrentUserInfoFromLocalStorage();
   const [comment, setComment] = useImmer({});
   let hasLiked = false;
   const [editCommentBtnClicked, setEditCommentBtnClicked] = useImmer(false);
   const [viewLikes, setViewLikes] = useImmer(false);
+  const [showControllerMenu, setShowControllerMenu] = useImmer(false);
 
   const getCommentFromServer = async (id) => {
     const instance = generateAxiosInstance();
@@ -76,11 +80,13 @@ export default function ViewComment({ parentPost, commentId }) {
 
   const handleDeleteButtonClick = () => deleteCommentFromServer(commentId);
 
+  const handleShowMenu = () => setShowControllerMenu(!showControllerMenu);
+
   return (
     <li>
       {
         objectIsEmpty(comment) ? <p>Loading...</p> :
-          <div className="comment">
+          <div className={theme === 'dark' ? "dark-theme comment" : "comment"}>
             <div className="comment-author-section">
               <div className="comment-author-details">
                 <DisplayPicture src={comment.comment_author.display_picture} alt={comment.comment_author.display_name} />
@@ -91,48 +97,70 @@ export default function ViewComment({ parentPost, commentId }) {
                   <p>{formatDatesForDisplay(comment.time_stamp)} ago</p>
                 </div>
               </div>
-              <div className="comment-controller-section">
+              <div className="comment-controller-section dropdown">
                 {
                   comment.comment_author._id === currentUser._id &&
                   <>
                     {
-                      !editCommentBtnClicked ?
-                        <button onClick={handleEditButtonClick}>
-                          <Icon path={mdiCommentEdit} size="2.3vmax" />
-                          <span>Edit Comment</span>
-                        </button> :
-                        <div className="add-comment-form-section modal">
-                          <button
-                            className="cancel-btn"
-                            onClick={handleEditButtonClick}
-                          >
-                            <Icon path={mdiClose} size="2.3vmax" />
-                          </button>
-                          <AddComment parentPost={parentPost} commentId={commentId} content={comment.comment_content} />
-                        </div>
+                      <button
+                        className={theme === 'dark' ? 'dark-theme' : undefined}
+                        onClick={handleShowMenu}>
+                        <Icon path={mdiDotsHorizontal} size={1} />
+                      </button>
                     }
                     {
-                      <button onClick={handleDeleteButtonClick}>
-                        <Icon path={mdiDeleteForever} size={1} />
-                        <span>Delete Comment</span>
-                      </button>
+                      showControllerMenu &&
+                      <ul className={theme === 'dark' ? 'dark-theme controller' : 'controller'}>
+                        <li>
+                          {
+                            !editCommentBtnClicked ?
+                              <button
+                                className={theme === 'dark' ? 'dark-theme' : undefined}
+                                onClick={handleEditButtonClick}
+                              >
+                                <Icon path={mdiCommentEdit} size={1} />
+                                <span>Edit Comment</span>
+                              </button> :
+                              <div className="add-comment-form-section modal">
+                                <button
+                                  className={theme === 'dark' ? 'dark-theme cancel-btn' : 'cancel-btn'}
+                                  onClick={handleEditButtonClick}
+                                >
+                                  <Icon path={mdiClose} size={1} />
+                                </button>
+                                <AddComment parentPost={parentPost} commentId={commentId} content={comment.comment_content} />
+                              </div>
+                          }
+                        </li>
+                        <li>
+                          {
+                            <button
+                              className={theme === 'dark' ? 'dark-theme' : undefined}
+                              onClick={handleDeleteButtonClick}
+                            >
+                              <Icon path={mdiDeleteForever} size={1} />
+                              <span>Delete Comment</span>
+                            </button>
+                          }
+                        </li>
+                      </ul>
                     }
                   </>
                 }
               </div>
             </div>
-            <div className="comment-content-secion">
+            <div className="comment-content-section">
               <p>{comment.comment_content}</p>
-              <div>
+              <div className="comment-stats">
                 <span className="dropdown">
                   {
                     comment.comment_likes.length > 0 ?
                       <>
                         <button
-                          className="view-likes-btn"
+                          className={theme === 'dark' ? 'dark-theme view-likes-btn' : "view-likes-btn"}
                           onClick={handleViewLikesButton}
                         >
-                          <Icon path={mdiThumbUp} size="2.3vmax" />
+                          <Icon path={mdiThumbUp} size={1} />
                           <span>{comment.comment_likes.length} Likes</span>
                         </button>
                         {viewLikes && <ViewLikes likesList={comment.comment_likes} />}
@@ -142,8 +170,11 @@ export default function ViewComment({ parentPost, commentId }) {
               </div>
             </div>
             <div className="comment-interaction-section">
-              <button className={hasLiked ? 'liked' : 'not-liked'} onClick={handleLikeButtonClick}>
-                <Icon path={mdiThumbUp} size="2.3vmax" />
+              <button
+                className={hasLiked ? 'liked comment-like-btn' : theme === 'dark' ? 'dark-theme comment-like-btn' : 'comment-like=btn'}
+                onClick={handleLikeButtonClick}
+              >
+                <Icon path={mdiThumbUp} size={1} />
                 <span>Like</span>
               </button>
             </div>

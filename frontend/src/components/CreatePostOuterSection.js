@@ -4,8 +4,11 @@ import Icon from '@mdi/react';
 import { mdiClose } from '@mdi/js';
 
 import CreatePost from './CreatePost';
+import { useContext } from "react";
+import { ThemeContext } from "../App";
 
 export default function CreatePostSection() {
+  const { theme } = useContext(ThemeContext);
   const [createPost, setCreatePost] = useImmer(false);
   const handleCreateButtonClick = () => {
     setCreatePost(!createPost);
@@ -19,14 +22,16 @@ export default function CreatePostSection() {
             id="create-post"
             onClick={handleCreateButtonClick}
           >
-            Share your thoughts
+            <h2>Share your thoughts...</h2>
           </button> :
-          <div className="create-post-form-section modal">
+          <div
+            className={theme === 'dark' ? 'create-post-form-section modal dark-theme' : 'create-post-form-section modal'}
+          >
             <button
-              className="cancel-btn"
+              className={theme === 'dark' ? "dark-theme cancel-btn" : "cancel-btn"}
               onClick={handleCreateButtonClick}
             >
-              <Icon path={mdiClose} size="2.3vmax" />
+              <Icon path={mdiClose} size={1} />
             </button>
             <CreatePost />
           </div>

@@ -46,7 +46,7 @@ export default function SearchUsers() {
                 {
                   searchResults.map(result => {
                     return (
-                      <li key={result._id}>
+                      <li className="minimal-user-display" key={result._id}>
                         <DisplayPicture src={result.display_picture} alt={result.display_name} />
                         <Link to={`/user/${result._id}`}>{result.display_name}</Link>
                       </li>
