@@ -2,7 +2,6 @@ import { Navigate, Outlet } from "react-router-dom";
 import {
   getAuthTokenFromLocalStorage,
   getThemePreferenceFromLocalStorage,
-  setThemePreferenceToLocalStorage,
   rootRef,
 } from "./helperModule";
 import CreatePostSection from "./components/CreatePostOuterSection";
@@ -17,12 +16,6 @@ export const ThemeContext = createContext({
 
 export default function App() {
   const [theme, setTheme] = useImmer(() => getThemePreferenceFromLocalStorage());
-  if (!theme) {
-    setThemePreferenceToLocalStorage({
-      theme: "light"
-    });
-    setTheme(() => getThemePreferenceFromLocalStorage());
-  }
   for (let key in rootRef) {
     if (theme === 'dark') {
       rootRef[key].classList.add('dark-theme');

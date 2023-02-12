@@ -48,7 +48,10 @@ export default function SearchUsers() {
                     return (
                       <li className="minimal-user-display" key={result._id}>
                         <DisplayPicture src={result.display_picture} alt={result.display_name} />
-                        <Link to={`/user/${result._id}`}>{result.display_name}</Link>
+                        <Link to={`/user/${result._id}`}>
+                          <span>{result.display_name}</span>
+                          <span className={result.status_online ? 'online' : 'offline'}></span>
+                        </Link>
                       </li>
                     )
                   })

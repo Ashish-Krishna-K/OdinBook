@@ -29,7 +29,10 @@ export default function ViewLikes({ likesList }) {
           likedUsers.map(user => {
             return (
               <li className="liked-users" key={user.id}>
-                <Link to={`/user/${user.id}`}>{user.display_name}</Link>
+                <Link to={`/user/${user.id}`}>
+                  <span>{user.display_name}</span>
+                  <span className={user.status_online ? 'online' : 'offline'}></span>
+                </Link>
               </li>
             )
           })

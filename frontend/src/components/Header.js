@@ -34,27 +34,29 @@ export default function Header() {
       <h1>
         <Link to="/">ODINBOOK</Link>
       </h1>
-      <SearchForm />
-      <div className="current-user-section">
-        <DisplayPicture src={currentUser.display_picture} alt={currentUser.display_name} />
-        <ul className="user-dropdown-menu">
-          <li>
-            <Link to={`/user/${currentUser._id}`}>{currentUser.display_name}</Link>
-          </li>
-          <li>
-            <button onClick={changeTheme}>
-              <Icon path={mdiThemeLightDark} size={1} />
-              <span>
-                {
-                  theme === 'dark' ? "Light Mode" : "Dark Mode"
-                }
-              </span>
-            </button>
-          </li>
-          <li>
-            <LogoutButton />
-          </li>
-        </ul>
+      <div className={theme === 'dark' ? 'header-right-side dark-theme' : "header-right-side"}>
+        <SearchForm />
+        <div className="current-user-section">
+          <DisplayPicture src={currentUser.display_picture} alt={currentUser.display_name} />
+          <ul className="user-dropdown-menu">
+            <li>
+              <Link to={`/user/${currentUser._id}`}>{currentUser.display_name}</Link>
+            </li>
+            <li>
+              <button onClick={changeTheme}>
+                <Icon path={mdiThemeLightDark} size={1} />
+                <span>
+                  {
+                    theme === 'dark' ? "Light Mode" : "Dark Mode"
+                  }
+                </span>
+              </button>
+            </li>
+            <li>
+              <LogoutButton />
+            </li>
+          </ul>
+        </div>
       </div>
     </header>
   )

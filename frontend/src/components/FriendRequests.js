@@ -3,6 +3,7 @@ import { useImmer } from "use-immer"
 import { ThemeContext } from "../App";
 import { generateAxiosInstance } from "../helperModule";
 import DisplayPicture from "./DPWithFallback";
+import { Link } from "react-router-dom";
 
 const getUserInfoFromServer = async (requestId) => {
   const instance = generateAxiosInstance();
@@ -44,7 +45,10 @@ export default function FriendRequests({ requestList }) {
         userItems.map(item => {
           return (
             <li className={theme === 'dark' ? 'dark-theme minimal-user-display' : 'minimal-user-display'} key={item.id}>
-              <p>{item.display_name}</p>
+              <Link to={`/user/${item.id}`}>
+                <span>{item.display_name}</span>
+                <span className={item.status_online ? 'online' : 'offline'}></span>
+              </Link>
               <DisplayPicture src={item.display_picture} alt={item.display_name} />
               <button onClick={handleAcceptClick} value={item._id}>Accept</button>
             </li>

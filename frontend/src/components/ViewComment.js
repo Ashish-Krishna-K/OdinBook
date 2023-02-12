@@ -92,7 +92,8 @@ export default function ViewComment({ parentPost, commentId }) {
                 <DisplayPicture src={comment.comment_author.display_picture} alt={comment.comment_author.display_name} />
                 <div>
                   <Link to={`/user/${comment.comment_author.id}`}>
-                    {comment.comment_author.display_name}
+                    <span>{comment.comment_author.display_name}</span>
+                    <span className={comment.comment_author.status_online ? 'online' : 'offline'}></span>
                   </Link>
                   <p>{formatDatesForDisplay(comment.time_stamp)} ago</p>
                 </div>

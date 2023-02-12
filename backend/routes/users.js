@@ -17,7 +17,7 @@ router.post('/search', UserController.search_user);
 
 router.put('/friend_request/:requestId/accept', UserController.accept_friend_request);
 
-router.post('/:id/friend_request', UserController.post_friend_request);
+router.put('/:id/friend_request', UserController.post_friend_request);
 
 router.get('/:id/friends', UserController.get_friends_list);
 

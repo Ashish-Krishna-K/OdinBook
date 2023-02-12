@@ -111,7 +111,8 @@ export default function ViewPost({ id }) {
                 <DisplayPicture src={post.post_author.display_picture} alt={post.post_author.display_name} />
                 <div>
                   <Link to={`/user/${post.post_author.id}`}>
-                    {post.post_author.display_name}
+                    <span>{post.post_author.display_name}</span>
+                    <span className={post.post_author.status_online ? 'online' : 'offline'}></span>
                   </Link>
                   <p>{formatDatesForDisplay(post.time_stamp)} ago</p>
                 </div>

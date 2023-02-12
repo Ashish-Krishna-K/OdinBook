@@ -28,7 +28,10 @@ export default function FriendsList({ id }) {
           return (
             <li className="minimal-user-display" key={friend._id}>
               <DisplayPicture src={friend.display_picture} alt={friend.display_name} />
-              <Link to={`/user/${friend._id}`}>{friend.display_name}</Link>
+              <Link to={`/user/${friend._id}`}>
+                <span>{friend.display_name}</span>
+                <span className={friend.status_online ? 'online' : 'offline'}></span>
+              </Link>
             </li>
           )
         })

@@ -31,9 +31,6 @@ export default function HomePage() {
   const uniqueFeed = Array.from(new Set(feed));
   return (
     <section className="content">
-      <div className="heading">
-        <h2>Home Page</h2>
-      </div>
       <div className="news-feed">
         {
           feed &&

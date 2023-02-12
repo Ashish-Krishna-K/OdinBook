@@ -1,9 +1,14 @@
-import { generateAxiosInstance } from "../helperModule"
+import Icon from '@mdi/react';
+import { mdiAccountPlus } from '@mdi/js';
 
-const postFriendRequestToServer = async (data) => {
+import { generateAxiosInstance } from "../helperModule";
+import { useContext } from 'react';
+import { ThemeContext } from '../App';
+
+const postFriendRequestToServer = async (userId) => {
   const instance = generateAxiosInstance();
   try {
-    const res = await instance.post('/users/:id/friend_request', data);
+    const res = await instance.put(`/users/${userId}/friend_request`);
     if (res.status === 200) {
       window.location.reload();
     }
@@ -13,16 +18,22 @@ const postFriendRequestToServer = async (data) => {
 }
 
 export default function FriendRequestButton({ userId, friends, currentUser }) {
+  const { theme } = useContext(ThemeContext);
   const handleButtonPress = () => {
-    const data = { id: userId }
-    postFriendRequestToServer(data);
+    postFriendRequestToServer(userId);
   };
   return (
     <>
       {
         friends.includes(currentUser) ?
-          <p>Friends</p>
-          : <button onClick={handleButtonPress}>Send Friend Request</button>
+          <p>Friends</p> :
+          <button
+            className={theme === 'dark' ? 'friend-req-btn dark-theme' : 'friend-req-btn'}
+            onClick={handleButtonPress}
+          >
+            <Icon path={mdiAccountPlus} size={1} />
+            <span>Send Friend Request</span>
+          </button>
       }
     </>
   )

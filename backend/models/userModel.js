@@ -8,7 +8,8 @@ const UserSchema = new Schema({
   display_name: { type: String },
   friends_list: [{ type: Schema.Types.ObjectId, ref: "User" }],
   friend_requests: [{ type: Schema.Types.ObjectId, ref: "User" }],
-  posts_list: [{ type: Schema.Types.ObjectId, ref: "Post" }]
+  posts_list: [{ type: Schema.Types.ObjectId, ref: "Post" }],
+  status_online: {type: Boolean},
 },
   {
     toObject: { virtuals: true },

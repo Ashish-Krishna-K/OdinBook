@@ -69,6 +69,7 @@ export default function UserPage() {
   const {
     display_name,
     display_picture,
+    status_online,
   } = userToDisplay || {};
 
   return (
@@ -102,7 +103,10 @@ export default function UserPage() {
             className={theme === 'dark' ? 'dark-theme user-name-and-image' : 'user-name-and-image'}
           >
             <DisplayPicture src={display_picture} alt={display_name} />
-            <h3>{display_name}</h3>
+            <h3>
+              <span>{display_name}</span>
+              <span className={status_online ? 'online' : 'offline'}></span>
+            </h3>
           </section>
         }
         <Outlet context={userToDisplay} />

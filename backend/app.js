@@ -32,21 +32,21 @@ passport.use(new FacebookStrategy(
     callbackURL: '/api/users/login/facebook/redirect',
     profileFields: ['id', 'displayName', 'email', 'picture.type(large)'],
   },
-  (accessToken, refreshToken, profile, done) => {
-    User.findOne({ uid: profile.id })
-      .exec((err, user) => {
-        if (err) { return done(err) };
-        if (user) return done(null, user);
-        const newUser = new User({
-          uid: profile.id,
-          email: profile.emails[0].value,
-          display_name: profile.displayName || profile.username,
-        });
-        newUser.save((err, user) => {
-          if (err) { return done(err) };
-          return done(null, user)
-        });
+  async (accessToken, refreshToken, profile, done) => {
+    try {
+      const user = await User.findOne({uid: profile.id}).exec();
+      if (user) return done(null, user);
+      const newUser = new User({
+        uid: profile.id,
+        email: profile.emails[0].value,
+        display_name: profile.displayName || profile.username,
+        status_online: true,
       });
+      const saved = await newUser.save();
+      return done(null, saved)
+    } catch (error) {
+      if (error) return done(error)
+    }
   }
 ));
 
@@ -54,17 +54,17 @@ passport.use(new JWTStrategy({
   jwtFromRequest: ExtractJWT.fromAuthHeaderAsBearerToken(),
   secretOrKey: process.env.JWT_SECRET
 },
-  (jwtPayload, done) => {
-    const id = JSON.parse(jwtPayload)
-    User.findById(id, "uid email display_name")
-      .exec((err, user) => {
-        if (err) return done(err);
-        if (!user) return done(null, false, "User Not Found")
-        return done(null, user);
-      })
+async (jwtPayload, done) => {
+  const id = JSON.parse(jwtPayload);
+  try {
+    const user = User.findById(id, "uid email display_name status_online").exec();
+    if (!user) return done(null, false, "User Not Found");
+    return done(null, user);
+  } catch (error) {
+    if (error) return done(error);
   }
+}
 ));
-
 
 const app = express();
 

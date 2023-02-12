@@ -26,7 +26,7 @@ export default function UserAbout() {
       {
         !objectIsEmpty(userToDisplay) &&
         <>
-          <div>
+          <div className="friend-req-btn-section">
             {
               id !== currentUser.id &&
               <div className={theme === 'dark' ? 'friend-request-section dark-theme' : 'friend-request-section'}>
