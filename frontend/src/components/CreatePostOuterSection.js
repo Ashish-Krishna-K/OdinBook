@@ -19,6 +19,7 @@ export default function CreatePostSection() {
       {
         !createPost ?
           <button
+            className={theme === 'dark' ? 'dark-theme' : undefined}
             id="create-post"
             onClick={handleCreateButtonClick}
           >

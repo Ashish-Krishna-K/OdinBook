@@ -21,6 +21,7 @@ export default function ViewLikes({ likesList }) {
     } else if (!checkForEquality(removedDupes, likedUsers)) {
       setLikedUsers(removedDupes);
     }
+    console.log(likedUsers);
   }).catch(error => console.log(error.response));
   return (
     <ul className={theme === 'dark' ? 'dark-theme liked-users-list' : 'liked-users-list'}>

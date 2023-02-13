@@ -104,7 +104,7 @@ exports.get_user_name = [
   passport.authenticate('jwt', { session: false }),
   async(req, res, next) => {
     try {
-      const user = User.findById(req.params.id, "display_name status_online").exec();
+      const user = await User.findById(req.params.id, "display_name status_online").exec();
       if (!user) return res.status(404).json("User not found");
       return res.json(user);
     } catch (error) {

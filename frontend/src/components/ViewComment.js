@@ -14,6 +14,7 @@ import {
   generateAxiosInstance,
   getCurrentUserInfoFromLocalStorage,
   objectIsEmpty,
+  toggleBackdrop,
 } from "../helperModule";
 import AddComment from "./AddComment";
 import DisplayPicture from "./DPWithFallback";
@@ -72,7 +73,10 @@ export default function ViewComment({ parentPost, commentId }) {
     hasLiked = result;
   }
 
-  const handleEditButtonClick = () => setEditCommentBtnClicked(!editCommentBtnClicked);
+  const handleEditButtonClick = () => {
+    setEditCommentBtnClicked(!editCommentBtnClicked);
+    toggleBackdrop();
+  }
 
   const handleViewLikesButton = () => setViewLikes(!viewLikes);
 
@@ -114,23 +118,14 @@ export default function ViewComment({ parentPost, commentId }) {
                       <ul className={theme === 'dark' ? 'dark-theme controller' : 'controller'}>
                         <li>
                           {
-                            !editCommentBtnClicked ?
-                              <button
-                                className={theme === 'dark' ? 'dark-theme' : undefined}
-                                onClick={handleEditButtonClick}
-                              >
-                                <Icon path={mdiCommentEdit} size={1} />
-                                <span>Edit Comment</span>
-                              </button> :
-                              <div className="add-comment-form-section modal">
-                                <button
-                                  className={theme === 'dark' ? 'dark-theme cancel-btn' : 'cancel-btn'}
-                                  onClick={handleEditButtonClick}
-                                >
-                                  <Icon path={mdiClose} size={1} />
-                                </button>
-                                <AddComment parentPost={parentPost} commentId={commentId} content={comment.comment_content} />
-                              </div>
+                            !editCommentBtnClicked &&
+                            <button
+                              className={theme === 'dark' ? 'dark-theme' : undefined}
+                              onClick={handleEditButtonClick}
+                            >
+                              <Icon path={mdiCommentEdit} size={1} />
+                              <span>Edit Comment</span>
+                            </button>
                           }
                         </li>
                         <li>
@@ -149,6 +144,17 @@ export default function ViewComment({ parentPost, commentId }) {
                   </>
                 }
               </div>
+              {editCommentBtnClicked &&
+                <div className="add-comment-form-section modal">
+                  <button
+                    className={theme === 'dark' ? 'dark-theme cancel-btn' : 'cancel-btn'}
+                    onClick={handleEditButtonClick}
+                  >
+                    <Icon path={mdiClose} size={1} />
+                  </button>
+                  <AddComment parentPost={parentPost} commentId={commentId} content={comment.comment_content} />
+                </div>
+              }
             </div>
             <div className="comment-content-section">
               <p>{comment.comment_content}</p>

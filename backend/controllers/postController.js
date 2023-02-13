@@ -54,7 +54,7 @@ exports.like_post = async (req, res, next) => {
     const authUser = await req.user;
     const currentUser = authUser.id;
     const targetPost = req.params.postId;
-    const post = await Post.findById(targetPost).exec();
+    const post = await Post.findById(targetPost).populate("post_author").exec();
     if (!post) return res.status(404).json("Post not found. It may have been deleted or moved");
     const likesArray = post.post_likes;
     const doesExist = post.post_likes.some(id => id.equals(currentUser));

@@ -134,23 +134,14 @@ export default function ViewPost({ id }) {
                       <ul className={theme === 'dark' ? 'dark-theme controller' : 'controller'}>
                         <li>
                           {
-                            !editPostButtonClicked ?
-                              <button
-                                className={theme === 'dark' ? "dark-theme" : undefined}
-                                onClick={handleEditButtonClick}
-                              >
-                                <Icon path={mdiSquareEditOutline} size={1} />
-                                <span>Edit Post</span>
-                              </button> :
-                              <div className="create-post-form-section modal">
-                                <button
-                                  className={theme === 'dark' ? 'dark-theme cancel-btn' : 'cancel-btn'}
-                                  onClick={handleEditButtonClick}
-                                >
-                                  <Icon path={mdiClose} size={1} />
-                                </button>
-                                <CreatePost content={post.post_content} postId={post._id} />
-                              </div>
+                            !editPostButtonClicked &&
+                            <button
+                              className={theme === 'dark' ? "dark-theme" : undefined}
+                              onClick={handleEditButtonClick}
+                            >
+                              <Icon path={mdiSquareEditOutline} size={1} />
+                              <span>Edit Post</span>
+                            </button>
                           }
                         </li>
                         <li>
@@ -169,6 +160,18 @@ export default function ViewPost({ id }) {
                   </>
                 }
               </div>
+              {
+                editPostButtonClicked &&
+                <div className={theme === 'dark' ? 'create-post-form-section modal dark-theme' : 'create-post-form-section modal'}>
+                  <button
+                    className={theme === 'dark' ? 'dark-theme cancel-btn' : 'cancel-btn'}
+                    onClick={handleEditButtonClick}
+                  >
+                    <Icon path={mdiClose} size={1} />
+                  </button>
+                  <CreatePost content={post.post_content} postId={post._id} />
+                </div>
+              }
             </div>
             <div className="post-content-section">
               <p>{post.post_content}</p>

@@ -7,9 +7,10 @@ export default function GuestLogin() {
   const getGuestTokenFromServer = async () => {
     try {
       const res = await axios.get(`${process.env.REACT_APP_API_DOMAIN}/api/users/guest/login`);
-      const { token, user } = res.data;
+      const { token, savedUser } = res.data;
+      console.log(token, savedUser);
       saveTokenToLocalStorage(token);
-      saveUserInfoInLocalStorage(user);
+      saveUserInfoInLocalStorage(savedUser);
       navigate('/')
     } catch (error) {
       console.log(error.response.status, error.response.data.message);

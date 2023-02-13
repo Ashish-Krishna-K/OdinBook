@@ -193,17 +193,15 @@ section#login-page {
 
 header {
   display: flex;
+  align-items: center;
   box-shadow: 0 0 5px 1px #656768;
   border-radius: 0;
   border-bottom: 1px solid #656768;
   background-color: #fff;
 }
 
-.header-right-side {
-  flex: 1;
-  display: flex;
-  justify-content: space-around;
-  align-items: center;
+header * {
+  /* border: 1px solid black; */
 }
 
 header.dark-theme {
@@ -212,7 +210,19 @@ header.dark-theme {
   border-bottom: 1px solid #F0F2F5;
 }
 
-.header-right-side.dark-theme {
+.navigation-horizontal {
+  flex: 1;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  margin: 0;
+}
+
+.nav-controller {
+  display: none;
+}
+
+.navigation-horizontal.dark-theme {
   background-color: #242526;
 }
 
@@ -232,12 +242,11 @@ header.dark-theme {
   text-align: center;
   min-width: 100%;
   display: none;
-  flex-direction: column;
-  align-items: center;
+
   position: absolute;
-  top: 70%;
   background-color: #242526;
   border: 1px solid white;
+  padding: 1vmax;
 }
 
 .user-dropdown-menu a {
@@ -260,6 +269,13 @@ header.dark-theme {
 .current-user-section:active>.user-dropdown-menu,
 .current-user-section:focus>.user-dropdown-menu {
   display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1vmin;
+}
+
+.navigation-vertical {
+  display: none;
 }
 
 .online {
@@ -624,10 +640,6 @@ section.user-details-section {
     margin: 0;
   }
 
-  header {
-    flex-direction: column;
-  }
-
   header>h1 {
     align-self: center;
   }
@@ -689,5 +701,56 @@ section.user-details-section {
     right: 0;
   }
 
+  .nav-controller {
+    display: block;
+    position: absolute;
+    right: 0;
+    z-index: 6;
+  }
+
+  .navigation-horizontal,
+  .navigation-horizontal.dark-theme {
+    display: none;
+  }
+
+  .navigation-vertical {
+    margin: 0;
+    border-radius: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 2vmax;
+    position: absolute;
+    background-color: #1877f2;
+    height: 100%;
+    right: 0;
+    z-index: 5;
+    top: 0%;
+    padding-top: 7vmax;
+    padding-left: 2vmax;
+    border: 1px solid #656768;
+  }
+
+  .navigation-vertical button,
+  .navigation-vertical a {
+    color: #F0F2F5;
+    font-weight: 600;
+  }
+
+  .navigation-vertical button:hover,
+  .navigation-vertical a:hover {
+    background-color: #F0F2F5 !important;
+    color: #1877f2 !important;
+  }
+
+  .navigation-vertical>.current-user {
+    display: flex;
+    align-items: center;
+    gap: 1vmin;
+  }
+
+  .navigation-vertical>.current-user a {
+    padding: 1vmax;
+  }
 
 }
