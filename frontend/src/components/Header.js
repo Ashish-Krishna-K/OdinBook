@@ -53,6 +53,7 @@ export default function Header() {
         <li>
           <SearchForm />
         </li>
+        <Link to="/notifications">Notifications</Link>
         <li className="current-user-section">
           <DisplayPicture src={currentUser.display_picture} alt={currentUser.display_name} />
           <ul

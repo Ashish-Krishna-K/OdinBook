@@ -1,7 +1,10 @@
 const express = require('express');
+
 const router = express.Router();
 
 const UserController = require('../controllers/userController');
+
+router.get('/notification/:id', UserController.get_notification);
 
 router.get('/guest/login', UserController.login_as_guest);
 

@@ -1,14 +1,12 @@
-import { Navigate, useNavigate, useParams } from "react-router-dom"
+import { Navigate, useParams } from "react-router-dom"
 import GuestLogin from "../components/GuestLogin";
 import {
-  generateAxiosInstance,
   getAuthTokenFromLocalStorage,
   saveTokenToLocalStorage,
-  saveUserInfoInLocalStorage
 } from "../helperModule";
+import ReactLoading from 'react-loading';
 
 export default function LoginPage() {
-  const navigate = useNavigate();
   const { token } = useParams();
 
   if (token) {
@@ -23,7 +21,7 @@ export default function LoginPage() {
             <h1>ODINBOOK</h1>
             <div className="login-section">
               {
-                token ? <p>Please wait...</p> :
+                token ? <ReactLoading type="bars" color={'#656768'} /> :
                   <div className="login-modal">
                     <button className="login-with-fb-btn">
                       <a href={`${process.env.REACT_APP_API_DOMAIN}/api/users/login/facebook`}>Login With Facebook</a>

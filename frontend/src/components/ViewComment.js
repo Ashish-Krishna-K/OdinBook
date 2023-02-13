@@ -19,10 +19,11 @@ import AddComment from "./AddComment";
 import DisplayPicture from "./DPWithFallback";
 import ViewLikes from "./ViewLikes";
 import { CurrentUserContext, ThemeContext } from "../context";
+import ReactLoading from 'react-loading';
 
 export default function ViewComment({ parentPost, commentId }) {
   const { theme } = useContext(ThemeContext);
-  const {currentUser} = useContext(CurrentUserContext);
+  const { currentUser } = useContext(CurrentUserContext);
   const [comment, setComment] = useImmer({});
   let hasLiked = false;
   const [editCommentBtnClicked, setEditCommentBtnClicked] = useImmer(false);
@@ -88,7 +89,8 @@ export default function ViewComment({ parentPost, commentId }) {
   return (
     <li>
       {
-        objectIsEmpty(comment) ? <p>Loading...</p> :
+        objectIsEmpty(comment) ? <ReactLoading type={"bars"} color={theme === 'dark' ? '#F0F2F5' : '#656768'} />
+          :
           <div className={theme === 'dark' ? "dark-theme comment" : "comment"}>
             <div className="comment-author-section">
               <div className="comment-author-details">

@@ -10,6 +10,7 @@ import UserFriends from "./pages/UserPage/UserFriends";
 import UserRequests from "./pages/UserPage/UserRequests";
 import UserPosts from "./pages/UserPage/UserPosts";
 import HomePage from "./pages/HomePage";
+import Notifications from "./pages/NotificationsPage";
 
 const router = createBrowserRouter([
   {
@@ -21,6 +22,11 @@ const router = createBrowserRouter([
         path: "/",
         element: <HomePage />,
         errorElement: <ErrorPage />,
+      },
+      {
+        path: "/notifications",
+        element: <Notifications />,
+        errorElement: <ErrorPage />
       },
       {
         path: "/user/search",

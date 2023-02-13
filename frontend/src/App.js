@@ -11,6 +11,7 @@ import Header from "./components/Header";
 import { useImmer } from "use-immer";
 import { ThemeContext, CurrentUserContext } from "./context";
 import { useEffect } from "react";
+import ReactLoading from 'react-loading';
 
 export default function App() {
   const [currentUser, setCurrentUser] = useImmer(null);
@@ -37,7 +38,6 @@ export default function App() {
   }
 
   useEffect(() => {
-    console.log(currentUser);
     if (getAuthTokenFromLocalStorage()) {
       getLoggedInUserFromServer();
     }
@@ -50,16 +50,18 @@ export default function App() {
           !getAuthTokenFromLocalStorage() ? <Navigate to="/login" /> :
             <>
               {
-                currentUser &&
-                <>
-                  <Header />
-                  <main>
-                    <section className="shrink-horizontally">
-                      <CreatePostSection />
-                      <Outlet />
-                    </section>
-                  </main>
-                </>
+                currentUser ?
+                  <>
+                    <Header />
+                    <main>
+                      <section className="shrink-horizontally">
+                        <CreatePostSection />
+                        <Outlet />
+                      </section>
+                    </main>
+                  </> :
+                  <ReactLoading type={"bars"} color={theme === 'dark' ? '#F0F2F5' : '#656768'}/>
+
               }
             </>
         }

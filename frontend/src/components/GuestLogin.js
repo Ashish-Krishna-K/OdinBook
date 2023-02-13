@@ -11,6 +11,7 @@ export default function GuestLogin() {
       saveTokenToLocalStorage(token);
       navigate('/');
     } catch (error) {
+      console.log(error);
       console.log(error.response.status, error.response.data.message);
       if (error.response.status === 404) {
         navigate('/login');

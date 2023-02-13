@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { useImmer } from "use-immer"
 import { checkForEquality, generateAxiosInstance } from "../helperModule";
 import { ThemeContext } from "../context";
+import ReactLoading from 'react-loading';
 
 const getLikedUserInfoFromServer = async (userId) => {
   const instance = generateAxiosInstance();
@@ -26,7 +27,10 @@ export default function ViewLikes({ likesList }) {
   return (
     <ul className={theme === 'dark' ? 'dark-theme liked-users-list' : 'liked-users-list'}>
       {
-        likedUsers.length === 0 ? <li>Loading...</li> :
+        likedUsers.length === 0 ?
+          <li>
+            <ReactLoading type="bars" color={'#F0F2F5'} />
+          </li> :
           likedUsers.map(user => {
             return (
               <li className="liked-users" key={user.id}>

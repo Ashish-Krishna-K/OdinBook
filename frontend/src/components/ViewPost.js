@@ -26,6 +26,7 @@ import DisplayPicture from "./DPWithFallback";
 import ViewComment from "./ViewComment";
 import ViewLikes from "./ViewLikes";
 import { CurrentUserContext, ThemeContext } from "../context";
+import ReactLoading from 'react-loading';
 
 export default function ViewPost({ id }) {
   const { theme } = useContext(ThemeContext);
@@ -104,7 +105,7 @@ export default function ViewPost({ id }) {
   return (
     <li>
       {
-        objectIsEmpty(post) ? <p>Loading...</p> :
+        objectIsEmpty(post) ? <ReactLoading type="bars" color={theme === 'dark' ? '#F0F2F5' : '#656768'} /> :
           <div className={theme === 'dark' ? "dark-theme post" : "post"}>
             <div className="post-author-section">
               <div className="post-author-details">

@@ -1,3 +1,4 @@
+// eslint-disable-next-line import/no-extraneous-dependencies
 const { faker } = require('@faker-js/faker');
 
 const createRandomUser = () => {
@@ -7,22 +8,19 @@ const createRandomUser = () => {
   return {
     uid: 103238712683120,
     email,
-    display_name: firstName + ' ' + lastName,
-  }
+    display_name: `${firstName} ${lastName}`
+  };
 };
 
 const User = require('./models/userModel');
 
 exports.createFakeUsers = () => {
+  // eslint-disable-next-line no-plusplus
   for (let i = 0; i <= 10; i++) {
     const data = createRandomUser();
     const newUser = new User(data);
-    newUser.save((err) => {
-      err ? console.log(err) : console.log('created');
-    });
+    newUser.save((err) => (err ? console.log(err) : console.log('created')));
   }
 };
 
-exports.createRandomLines = () => {
-  return faker.lorem.lines();
-}
+exports.createRandomLines = () => faker.lorem.lines();
