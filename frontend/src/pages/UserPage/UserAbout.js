@@ -1,15 +1,14 @@
 import { useOutletContext } from "react-router-dom";
 import {
-  getCurrentUserInfoFromLocalStorage,
   objectIsEmpty,
 } from "../../helperModule";
 import FriendRequestButton from "../../components/SendFriendRequest";
 import { useContext } from "react";
-import { ThemeContext } from "../../App";
+import { CurrentUserContext, ThemeContext } from "../../context";
 
 export default function UserAbout() {
   const { theme } = useContext(ThemeContext);
-  const currentUser = getCurrentUserInfoFromLocalStorage();
+  const { currentUser } = useContext(CurrentUserContext);
   const userToDisplay = useOutletContext();
   const {
     id,

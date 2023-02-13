@@ -5,7 +5,7 @@ import { mdiClose } from '@mdi/js';
 
 import CreatePost from './CreatePost';
 import { useContext } from "react";
-import { ThemeContext } from "../App";
+import { ThemeContext } from "../context";
 
 export default function CreatePostSection() {
   const { theme } = useContext(ThemeContext);

@@ -1,6 +1,6 @@
 import { useContext, useEffect } from "react";
 import { useImmer } from "use-immer"
-import { ThemeContext } from "../App";
+import { ThemeContext } from "../context";
 import { generateAxiosInstance } from "../helperModule";
 import DisplayPicture from "./DPWithFallback";
 import { Link } from "react-router-dom";

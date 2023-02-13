@@ -12,18 +12,17 @@ import {
 import {
   formatDatesForDisplay,
   generateAxiosInstance,
-  getCurrentUserInfoFromLocalStorage,
   objectIsEmpty,
   toggleBackdrop,
 } from "../helperModule";
 import AddComment from "./AddComment";
 import DisplayPicture from "./DPWithFallback";
 import ViewLikes from "./ViewLikes";
-import { ThemeContext } from "../App";
+import { CurrentUserContext, ThemeContext } from "../context";
 
 export default function ViewComment({ parentPost, commentId }) {
   const { theme } = useContext(ThemeContext);
-  const currentUser = getCurrentUserInfoFromLocalStorage();
+  const {currentUser} = useContext(CurrentUserContext);
   const [comment, setComment] = useImmer({});
   let hasLiked = false;
   const [editCommentBtnClicked, setEditCommentBtnClicked] = useImmer(false);

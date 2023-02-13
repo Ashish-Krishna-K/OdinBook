@@ -7,19 +7,19 @@ import {
 } from '@mdi/js';
 
 import {
-  getCurrentUserInfoFromLocalStorage,
   rootRef,
   setThemePreferenceToLocalStorage
 } from "../helperModule";
+
 import SearchForm from "./SearchForm";
 import LogoutButton from "./LogoutButton";
 import DisplayPicture from "./DPWithFallback";
 import { useContext } from "react";
-import { ThemeContext } from "../App";
+import { CurrentUserContext, ThemeContext } from "../context";
 import { useImmer } from "use-immer";
 
 export default function Header() {
-  const currentUser = getCurrentUserInfoFromLocalStorage();
+  const { currentUser } = useContext(CurrentUserContext);
   const { theme, setTheme } = useContext(ThemeContext);
   const [showMenu, setShowMenu] = useImmer(false);
 

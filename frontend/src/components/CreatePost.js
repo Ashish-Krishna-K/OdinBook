@@ -1,6 +1,6 @@
 import { useContext } from "react";
 import { useImmer } from "use-immer"
-import { ThemeContext } from "../App";
+import { ThemeContext } from "../context";
 import { generateAxiosInstance } from "../helperModule";
 
 export default function CreatePost({ content, postId }) {

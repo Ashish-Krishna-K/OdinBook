@@ -13,7 +13,7 @@ import {
 } from "../../helperModule";
 import DisplayPicture from "../../components/DPWithFallback";
 import { useContext } from "react";
-import { ThemeContext } from "../../App";
+import { CurrentUserContext, ThemeContext } from "../../context";
 
 const getUserFromServer = async (id) => {
   const instance = generateAxiosInstance();
@@ -21,8 +21,8 @@ const getUserFromServer = async (id) => {
 };
 
 export default function UserPage() {
-  const { theme } = useContext(ThemeContext)
-  const currentUser = getCurrentUserInfoFromLocalStorage();
+  const { theme } = useContext(ThemeContext);
+  const { currentUser } = useContext(CurrentUserContext);
   const location = useLocation();
   const { userId } = useParams();
   const [userToDisplay, setUserToDisplay] = useImmer({});

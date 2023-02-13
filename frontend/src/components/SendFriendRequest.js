@@ -3,7 +3,7 @@ import { mdiAccountPlus } from '@mdi/js';
 
 import { generateAxiosInstance } from "../helperModule";
 import { useContext } from 'react';
-import { ThemeContext } from '../App';
+import { ThemeContext } from "../context";
 
 const postFriendRequestToServer = async (userId) => {
   const instance = generateAxiosInstance();

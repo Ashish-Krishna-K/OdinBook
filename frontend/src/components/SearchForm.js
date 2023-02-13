@@ -4,8 +4,7 @@ import { mdiMagnify } from '@mdi/js';
 import { useNavigate, createSearchParams } from "react-router-dom";
 import { useImmer } from "use-immer";
 import { useContext } from 'react';
-import { ThemeContext } from '../App';
-
+import { ThemeContext } from "../context";
 
 export default function SearchForm() {
   const { theme } = useContext(ThemeContext);

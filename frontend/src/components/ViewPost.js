@@ -25,11 +25,11 @@ import CreatePost from "./CreatePost";
 import DisplayPicture from "./DPWithFallback";
 import ViewComment from "./ViewComment";
 import ViewLikes from "./ViewLikes";
-import { ThemeContext } from "../App";
+import { CurrentUserContext, ThemeContext } from "../context";
 
 export default function ViewPost({ id }) {
   const { theme } = useContext(ThemeContext);
-  const currentUser = getCurrentUserInfoFromLocalStorage();
+  const { currentUser } = useContext(CurrentUserContext);
   const [post, setPost] = useImmer({});
   let hasLiked = false;
   const [editPostButtonClicked, setEditPostButtonClicked] = useImmer(false)

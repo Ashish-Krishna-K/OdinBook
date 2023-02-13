@@ -1,14 +1,15 @@
-import { useEffect } from "react";
+import { useContext, useEffect } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import { useImmer } from "use-immer";
 import DisplayPicture from "../components/DPWithFallback";
+import { CurrentUserContext } from "../context";
 import { generateAxiosInstance, getCurrentUserInfoFromLocalStorage } from "../helperModule";
 
 export default function SearchUsers() {
+  const { currentUser } = useContext(CurrentUserContext);
   const [searchParams, setSearchParams] = useSearchParams();
   const query = searchParams.get('q');
   const [searchResults, setSearchResults] = useImmer([]);
-  const currentUser = getCurrentUserInfoFromLocalStorage();
   const [error, setError] = useImmer(null);
 
   const submitSearchReqToServer = async (data) => {
