@@ -238,3 +238,19 @@ exports.get_notification = [
     }
   }
 ];
+
+exports.mark_noti_as_read = [
+  passport.authenticate('jwt', { session: false }),
+  async (req, res) => {
+    const notificationId = req.params.id;
+    try {
+      const notification = await Notification.findByIdAndUpdate(notificationId, {
+        is_read: true
+      }, { returnDocument: 'after' }).exec();
+      return res.json(notification);
+    }
+    catch (error) {
+      return res.status(400).json(error.stack);
+    }
+  }
+];

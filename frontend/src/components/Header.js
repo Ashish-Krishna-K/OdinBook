@@ -4,6 +4,7 @@ import {
   mdiThemeLightDark,
   mdiMenu,
   mdiClose,
+  mdiBell,
 } from '@mdi/js';
 
 import {
@@ -20,6 +21,7 @@ import { useImmer } from "use-immer";
 
 export default function Header() {
   const { currentUser } = useContext(CurrentUserContext);
+  const unreadNoti = currentUser.notifications.filter(item => !item.is_read)
   const { theme, setTheme } = useContext(ThemeContext);
   const [showMenu, setShowMenu] = useImmer(false);
 
@@ -53,7 +55,10 @@ export default function Header() {
         <li>
           <SearchForm />
         </li>
-        <Link to="/notifications">Notifications</Link>
+        <Link to="/notifications">
+          <Icon path={mdiBell} size={1} />
+          <span>{unreadNoti.length}</span>
+        </Link>
         <li className="current-user-section">
           <DisplayPicture src={currentUser.display_picture} alt={currentUser.display_name} />
           <ul
@@ -83,6 +88,12 @@ export default function Header() {
         <ul className={theme === 'dark' ? 'navigation-vertical dark-theme' : "navigation-vertical"}>
           <li>
             <SearchForm />
+          </li>
+          <li>
+            <Link to="/notifications">
+              <Icon path={mdiBell} size={1} />
+              <span>{unreadNoti.length}</span>
+            </Link>
           </li>
           <li className="current-user">
             <span>

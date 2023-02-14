@@ -6,6 +6,8 @@ const UserController = require('../controllers/userController');
 
 router.get('/notification/:id', UserController.get_notification);
 
+router.put('/notification/:id/read', UserController.mark_noti_as_read);
+
 router.get('/guest/login', UserController.login_as_guest);
 
 router.get('/login/facebook/redirect', UserController.fb_login_redirect);
