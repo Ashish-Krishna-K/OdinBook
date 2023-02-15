@@ -1,6 +1,8 @@
 import { useOutletContext } from "react-router-dom"
-import FriendRequests from "../../components/FriendRequests";
+
 import { objectIsEmpty } from "../../helperModule";
+
+import FriendRequests from "../../components/FriendRequests";
 
 export default function UserRequests() {
   const userToDisplay = useOutletContext();

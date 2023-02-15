@@ -1,9 +1,17 @@
-import { useContext, useEffect } from "react";
-import { Link, useSearchParams } from "react-router-dom";
+import {
+  useContext,
+  useEffect
+} from "react";
+import {
+  Link,
+  useSearchParams
+} from "react-router-dom";
 import { useImmer } from "use-immer";
-import DisplayPicture from "../components/DPWithFallback";
+
+import { generateAxiosInstance } from "../helperModule";
 import { CurrentUserContext } from "../context";
-import { generateAxiosInstance, getCurrentUserInfoFromLocalStorage } from "../helperModule";
+
+import DisplayPicture from "../components/DPWithFallback";
 
 export default function SearchUsers() {
   const { currentUser } = useContext(CurrentUserContext);

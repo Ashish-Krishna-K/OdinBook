@@ -1,10 +1,15 @@
-import { Navigate, useParams } from "react-router-dom"
-import GuestLogin from "../components/GuestLogin";
+import {
+  Navigate,
+  useParams
+} from "react-router-dom"
+import ReactLoading from 'react-loading';
+
 import {
   getAuthTokenFromLocalStorage,
   saveTokenToLocalStorage,
 } from "../helperModule";
-import ReactLoading from 'react-loading';
+
+import GuestLogin from "../components/GuestLogin";
 
 export default function LoginPage() {
   const { token } = useParams();

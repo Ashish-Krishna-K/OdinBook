@@ -1,6 +1,10 @@
 import { useEffect } from "react";
 import { useImmer } from "use-immer";
-import { checkForEquality, generateAxiosInstance, objectIsEmpty } from "../helperModule";
+import {
+  checkForEquality,
+  generateAxiosInstance,
+  objectIsEmpty
+} from "../helperModule";
 
 const getNotificationFromServer = async (id) => {
   const instance = generateAxiosInstance();

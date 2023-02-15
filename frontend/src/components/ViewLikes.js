@@ -1,9 +1,13 @@
 import { useContext } from "react";
 import { Link } from "react-router-dom";
 import { useImmer } from "use-immer"
-import { checkForEquality, generateAxiosInstance } from "../helperModule";
-import { ThemeContext } from "../context";
 import ReactLoading from 'react-loading';
+
+import {
+  checkForEquality,
+  generateAxiosInstance
+} from "../helperModule";
+import { ThemeContext } from "../context";
 
 const getLikedUserInfoFromServer = async (userId) => {
   const instance = generateAxiosInstance();

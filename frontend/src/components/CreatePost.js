@@ -1,7 +1,8 @@
 import { useContext } from "react";
 import { useImmer } from "use-immer"
-import { ThemeContext } from "../context";
+
 import { generateAxiosInstance } from "../helperModule";
+import { ThemeContext } from "../context";
 
 export default function CreatePost({ content, postId }) {
   const { theme } = useContext(ThemeContext);
@@ -29,7 +30,7 @@ export default function CreatePost({ content, postId }) {
   const submitEditPostToServer = async (data) => {
     const instance = generateAxiosInstance();
     try {
-      const res = await instance.put(`/posts/${postId}/edit`, data);
+      await instance.put(`/posts/${postId}/edit`, data);
       window.location.reload();
     } catch (error) {
       console.log(error.response.status, error.response.data);

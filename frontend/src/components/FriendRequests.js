@@ -1,9 +1,14 @@
-import { useContext, useEffect } from "react";
+import {
+  useContext,
+  useEffect
+} from "react";
 import { useImmer } from "use-immer"
-import { ThemeContext } from "../context";
-import { generateAxiosInstance } from "../helperModule";
-import DisplayPicture from "./DPWithFallback";
 import { Link } from "react-router-dom";
+
+import { generateAxiosInstance } from "../helperModule";
+import { ThemeContext } from "../context";
+
+import DisplayPicture from "./DPWithFallback";
 
 const getUserInfoFromServer = async (requestId) => {
   const instance = generateAxiosInstance();
@@ -33,7 +38,7 @@ export default function FriendRequests({ requestList }) {
       const removedDupes = Array.from(new Set(extractedData));
       setUserItems(removedDupes);
     }).catch(error => console.log(error.response));
-  }, [requestList]);
+  }, [requestList, setUserItems]);
 
   const handleAcceptClick = (e) => {
     acceptFriendRequestToServer(e.target.value);

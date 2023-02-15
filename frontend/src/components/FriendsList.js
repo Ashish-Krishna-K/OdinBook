@@ -1,7 +1,9 @@
 import { useEffect } from "react";
 import { Link } from "react-router-dom";
 import { useImmer } from "use-immer";
+
 import { generateAxiosInstance } from "../helperModule";
+
 import DisplayPicture from "./DPWithFallback";
 
 export default function FriendsList({ id }) {

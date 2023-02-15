@@ -1,8 +1,8 @@
+import { useContext } from 'react';
 import Icon from '@mdi/react';
 import { mdiAccountPlus } from '@mdi/js';
 
 import { generateAxiosInstance } from "../helperModule";
-import { useContext } from 'react';
 import { ThemeContext } from "../context";
 
 const postFriendRequestToServer = async (userId) => {

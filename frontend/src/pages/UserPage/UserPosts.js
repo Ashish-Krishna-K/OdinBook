@@ -1,6 +1,8 @@
 import { useOutletContext } from "react-router-dom"
-import ViewPost from "../../components/ViewPost";
+
 import { objectIsEmpty } from "../../helperModule";
+
+import ViewPost from "../../components/ViewPost";
 
 export default function UserPosts() {
   const userToDisplay = useOutletContext();

@@ -1,9 +1,12 @@
+import { useContext } from 'react';
+import {
+  useNavigate,
+  createSearchParams
+} from "react-router-dom";
+import { useImmer } from "use-immer";
 import Icon from '@mdi/react';
 import { mdiMagnify } from '@mdi/js';
 
-import { useNavigate, createSearchParams } from "react-router-dom";
-import { useImmer } from "use-immer";
-import { useContext } from 'react';
 import { ThemeContext } from "../context";
 
 export default function SearchForm() {

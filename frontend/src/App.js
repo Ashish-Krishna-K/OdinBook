@@ -1,4 +1,11 @@
-import { Navigate, Outlet } from "react-router-dom";
+import { useEffect } from "react";
+import { useImmer } from "use-immer";
+import {
+  Navigate,
+  Outlet
+} from "react-router-dom";
+import ReactLoading from 'react-loading';
+
 import {
   getAuthTokenFromLocalStorage,
   getThemePreferenceFromLocalStorage,
@@ -6,12 +13,13 @@ import {
   rootRef,
   checkForEquality,
 } from "./helperModule";
+import {
+  ThemeContext,
+  CurrentUserContext
+} from "./context";
+
 import CreatePostSection from "./components/CreatePostOuterSection";
 import Header from "./components/Header";
-import { useImmer } from "use-immer";
-import { ThemeContext, CurrentUserContext } from "./context";
-import { useEffect } from "react";
-import ReactLoading from 'react-loading';
 
 export default function App() {
   const [currentUser, setCurrentUser] = useImmer(null);
@@ -60,7 +68,7 @@ export default function App() {
                       </section>
                     </main>
                   </> :
-                  <ReactLoading type={"bars"} color={theme === 'dark' ? '#F0F2F5' : '#656768'}/>
+                  <ReactLoading type={"bars"} color={theme === 'dark' ? '#F0F2F5' : '#656768'} />
 
               }
             </>

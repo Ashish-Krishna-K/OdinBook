@@ -1,19 +1,23 @@
+import { useContext } from "react";
+import { useImmer } from "use-immer";
 import {
   Link,
   Outlet,
   useLocation,
   useParams,
 } from "react-router-dom";
-import { useImmer } from "use-immer";
+
 import {
   generateAxiosInstance,
   objectIsEmpty,
-  getCurrentUserInfoFromLocalStorage,
   getCurrentPathEnd,
 } from "../../helperModule";
+import {
+  CurrentUserContext,
+  ThemeContext
+} from "../../context";
+
 import DisplayPicture from "../../components/DPWithFallback";
-import { useContext } from "react";
-import { CurrentUserContext, ThemeContext } from "../../context";
 
 const getUserFromServer = async (id) => {
   const instance = generateAxiosInstance();

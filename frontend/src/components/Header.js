@@ -1,4 +1,6 @@
+import { useContext } from "react";
 import { Link } from "react-router-dom";
+import { useImmer } from "use-immer";
 import Icon from '@mdi/react';
 import {
   mdiThemeLightDark,
@@ -11,13 +13,14 @@ import {
   rootRef,
   setThemePreferenceToLocalStorage
 } from "../helperModule";
+import {
+  CurrentUserContext,
+  ThemeContext
+} from "../context";
 
 import SearchForm from "./SearchForm";
 import LogoutButton from "./LogoutButton";
 import DisplayPicture from "./DPWithFallback";
-import { useContext } from "react";
-import { CurrentUserContext, ThemeContext } from "../context";
-import { useImmer } from "use-immer";
 
 export default function Header() {
   const { currentUser } = useContext(CurrentUserContext);

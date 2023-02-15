@@ -1,11 +1,12 @@
+import { useContext } from "react";
 import { useImmer } from "use-immer";
-import { toggleBackdrop } from '../helperModule';
 import Icon from '@mdi/react';
 import { mdiClose } from '@mdi/js';
 
-import CreatePost from './CreatePost';
-import { useContext } from "react";
+import { toggleBackdrop } from '../helperModule';
 import { ThemeContext } from "../context";
+
+import CreatePost from './CreatePost';
 
 export default function CreatePostSection() {
   const { theme } = useContext(ThemeContext);

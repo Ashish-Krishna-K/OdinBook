@@ -3,7 +3,6 @@ const jwt = require('jsonwebtoken');
 
 const User = require('../models/userModel');
 const Notification = require('../models/notificationModel');
-const { populate } = require('../models/userModel');
 // const { createFakeUsers } = require('../fakeData');
 
 exports.login_with_fb = [

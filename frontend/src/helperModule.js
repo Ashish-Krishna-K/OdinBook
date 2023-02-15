@@ -1,6 +1,9 @@
 import axios from "axios"
-import { parseISO, formatDistanceToNow } from "date-fns";
 import CryptoJS from "crypto-js";
+import {
+  parseISO,
+  formatDistanceToNow
+} from "date-fns";
 
 export const getAuthTokenFromLocalStorage = () => {
   const token = JSON.parse(localStorage.getItem('AUTH_TOKEN'));

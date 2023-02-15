@@ -1,6 +1,11 @@
 import { useImmer } from "use-immer";
+
+import {
+  checkForEquality,
+  generateAxiosInstance
+} from "../helperModule";
+
 import ViewPost from "../components/ViewPost";
-import { checkForEquality, generateAxiosInstance } from "../helperModule";
 
 const getNewsFeed = async () => {
   const instance = generateAxiosInstance();
@@ -39,7 +44,6 @@ export default function HomePage() {
           </ul>
         }
       </div>
-
     </section>
   )
 }

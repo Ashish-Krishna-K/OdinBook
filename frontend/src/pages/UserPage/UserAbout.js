@@ -1,10 +1,10 @@
-import { useOutletContext } from "react-router-dom";
-import {
-  objectIsEmpty,
-} from "../../helperModule";
-import FriendRequestButton from "../../components/SendFriendRequest";
 import { useContext } from "react";
+import { useOutletContext } from "react-router-dom";
+
+import { objectIsEmpty } from "../../helperModule";
 import { CurrentUserContext, ThemeContext } from "../../context";
+
+import FriendRequestButton from "../../components/SendFriendRequest";
 
 export default function UserAbout() {
   const { theme } = useContext(ThemeContext);

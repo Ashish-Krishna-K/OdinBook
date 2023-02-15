@@ -1,6 +1,10 @@
-import { useContext, useEffect } from "react";
+import {
+  useContext,
+  useEffect
+} from "react";
 import { useImmer } from "use-immer";
 import { Link } from "react-router-dom";
+import ReactLoading from 'react-loading';
 import Icon from '@mdi/react';
 import {
   mdiThumbUp,
@@ -15,18 +19,19 @@ import {
 import {
   formatDatesForDisplay,
   generateAxiosInstance,
-  getCurrentUserInfoFromLocalStorage,
   objectIsEmpty,
   toggleBackdrop
 } from "../helperModule";
+import {
+  CurrentUserContext,
+  ThemeContext
+} from "../context";
 
 import AddComment from "./AddComment";
 import CreatePost from "./CreatePost";
 import DisplayPicture from "./DPWithFallback";
 import ViewComment from "./ViewComment";
 import ViewLikes from "./ViewLikes";
-import { CurrentUserContext, ThemeContext } from "../context";
-import ReactLoading from 'react-loading';
 
 export default function ViewPost({ id }) {
   const { theme } = useContext(ThemeContext);

@@ -1,6 +1,8 @@
 import { useContext } from "react";
-import IndividualNotification from "../components/IndividualNotification";
+
 import { CurrentUserContext } from "../context";
+
+import IndividualNotification from "../components/IndividualNotification";
 
 export default function Notifications() {
   const { currentUser } = useContext(CurrentUserContext);

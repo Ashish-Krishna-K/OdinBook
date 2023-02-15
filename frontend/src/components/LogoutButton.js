@@ -1,6 +1,10 @@
 import Icon from '@mdi/react';
 import { mdiLogout } from '@mdi/js';
-import { generateAxiosInstance, clearLocalStorage } from "../helperModule";
+
+import {
+  generateAxiosInstance,
+  clearLocalStorage
+} from "../helperModule";
 
 export default function LogoutButton() {
   const postLogoutToServer = async () => {
