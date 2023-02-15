@@ -29,7 +29,7 @@ passport.use(new FacebookStrategy(
   {
     clientID: process.env.FACEBOOK_APP_ID,
     clientSecret: process.env.FACEBOOK_APP_SECRET,
-    callbackURL: '/api/users/login/facebook/redirect',
+    callbackURL: `${process.env.SERVER_DOMAIN}api/users/login/facebook/redirect`,
     profileFields: ['id', 'displayName', 'email', 'picture.type(large)']
   },
   async (accessToken, refreshToken, profile, done) => {
